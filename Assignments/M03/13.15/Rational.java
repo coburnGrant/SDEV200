@@ -39,31 +39,23 @@ public class Rational extends Number implements Comparable<Rational> {
 
     /** Add a rational number to this rational */
     public Rational add(Rational secondRational) {
-        // cross multiply
-        /*
-         * n1 / d1 + n2 / d2
-         * (n1 * d2 + n2 * d1) / d1 * d2
-         */
-
         BigInteger n1 = numerator.multiply(secondRational.getDenominator());
         BigInteger n2 = denominator.multiply(secondRational.getNumerator());
 
         BigInteger n = n1.add(n2);
-
-        BigInteger d= denominator.multiply(secondRational.getDenominator());
+        BigInteger d = denominator.multiply(secondRational.getDenominator());
 
         return new Rational(n, d);
     }
 
     /** Subtract a rational number from this rational */
     public Rational subtract(Rational secondRational) {
-        // cross multiply
         BigInteger n1 = numerator.multiply(secondRational.getDenominator());
         BigInteger n2 = denominator.multiply(secondRational.getNumerator());
 
         BigInteger n = n1.subtract(n2);
+        BigInteger d = denominator.multiply(secondRational.getDenominator());
 
-        BigInteger d= denominator.multiply(secondRational.getDenominator());
         return new Rational(n, d);
     }
 
@@ -71,6 +63,7 @@ public class Rational extends Number implements Comparable<Rational> {
     public Rational multiply(Rational secondRational) {
         BigInteger n = numerator.multiply(secondRational.getNumerator());
         BigInteger d = denominator.multiply(secondRational.getDenominator());
+
         return new Rational(n, d);
     }
 
@@ -78,6 +71,7 @@ public class Rational extends Number implements Comparable<Rational> {
     public Rational divide(Rational secondRational) {
         BigInteger n = numerator.multiply(secondRational.getDenominator());
         BigInteger d = denominator.multiply(secondRational.getNumerator());
+
         return new Rational(n, d);
     }
 
@@ -89,6 +83,7 @@ public class Rational extends Number implements Comparable<Rational> {
     @Override // Override the equals method in the Object class
     public boolean equals(Object other) {
         Rational difference = this.subtract((Rational) other);
+
         return difference.getNumerator().equals(BigInteger.ZERO);
     }
 
@@ -112,6 +107,7 @@ public class Rational extends Number implements Comparable<Rational> {
         return (long) doubleValue();
     }
 
+    // BigDecimal value of the rational number
     public BigDecimal bigDecimalValue() {
         return new BigDecimal(numerator.doubleValue() / denominator.doubleValue());
     }
@@ -119,6 +115,7 @@ public class Rational extends Number implements Comparable<Rational> {
     @Override // Implement the compareTo method in Comparable
     public int compareTo(Rational o) {
         double difference = this.subtract(o).doubleValue();
+
         if (difference < 0) {
             return -1;
         } else if (difference == 0) {
