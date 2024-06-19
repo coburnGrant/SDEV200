@@ -8,8 +8,7 @@ public class Circle extends GeometricObject implements Comparable<Circle> {
     this.radius = radius;
   }
 
-  public Circle(double radius,
-      String color, boolean filled) {
+  public Circle(double radius, String color, boolean filled) {
     this.radius = radius;
     setColor(color);
     setFilled(filled);
@@ -45,9 +44,11 @@ public class Circle extends GeometricObject implements Comparable<Circle> {
     System.out.println("The circle is created " + getDateCreated() +
         " and the radius is " + radius);
   }
+  @Override
+  public boolean equals(Object o) {
+    Circle circle = (Circle) o;
 
-  public boolean equals(Circle o) {
-    return (this.radius == o.radius);
+    return (this.radius == circle.radius);
   }
 
   @Override

@@ -53,7 +53,6 @@ public class GeometricObject {
   /** Return a string representation of this object */
   @Override
   public String toString() {
-    return "created on " + dateCreated + "\ncolor: " + color +
-        " and filled: " + filled;
+    return "circle created on " + dateCreated + "\ncolor: " + color + " and filled: " + filled;
   }
 }
