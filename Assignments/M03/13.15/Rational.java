@@ -99,7 +99,7 @@ public class Rational extends Number implements Comparable<Rational> {
 
     @Override // Implement the doubleValue method in Number
     public double doubleValue() {
-        return numerator.divide(denominator).doubleValue();
+        return bigDecimalValue().doubleValue();
     }
 
     @Override // Implement the abstract longValue method in Number

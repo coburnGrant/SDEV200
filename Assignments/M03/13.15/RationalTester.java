@@ -22,7 +22,7 @@ public class RationalTester {
         System.out.println(r1 + " * " + r2 + " = " + r1.multiply(r2));
         System.out.println(r1 + " / " + r2 + " = " + r1.divide(r2));
 
-        System.out.println(r1 + " is " + r1.bigDecimalValue());
-        System.out.println(r2 + " is " + r2.bigDecimalValue());
+        System.out.println(r1 + " is " + r1.doubleValue());
+        System.out.println(r2 + " is " + r2.doubleValue());
     }
 }
