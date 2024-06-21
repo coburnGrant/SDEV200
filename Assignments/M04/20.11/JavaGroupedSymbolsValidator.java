@@ -107,6 +107,7 @@ public class JavaGroupedSymbolsValidator {
                     }
                     break;
                 case ']':
+                    // ensure group closing symbol is not in a string/char
                     if (stringStackIsEmpty) {
                         // make sure last symbol was opening symbol
                         if (stackIsEmpty || groupCharStack.pop() != '[') {
