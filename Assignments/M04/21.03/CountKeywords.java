@@ -60,7 +60,7 @@ public class CountKeywords {
                  */
                 continue;
             } else {
-                // no long a multiline comment
+                // no longer within a multiline comment
                 isMultilineComment = false;
             }
 
