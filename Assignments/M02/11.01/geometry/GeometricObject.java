@@ -1,3 +1,5 @@
+package geometry;
+
 // GeometricObject.java: The abstract GeometricObject class
 public abstract class GeometricObject {
   private String color = "white";

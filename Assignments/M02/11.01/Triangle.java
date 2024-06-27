@@ -1,3 +1,5 @@
+import geometry.GeometricObject;
+
 public class Triangle extends GeometricObject {
     /** Side 1 of the triangle */
     private double side1 = 1.0;
@@ -8,11 +10,11 @@ public class Triangle extends GeometricObject {
     /** Side 3 of the triangle */
     private double side3 = 1.0;
 
-    /** Default contructor. All sides default to 1 */
+    /** Default constructor. All sides default to 1 */
     public Triangle() {
     }
 
-    /** Contruct a Triangle with 3 side lengths */
+    /** Construct a Triangle with 3 side lengths */
     public Triangle(double side1, double side2, double side3) {
         this.side1 = side1;
         this.side2 = side2;
