@@ -122,7 +122,7 @@ public class TwoWayLinkedListTest {
         // Testing clear method
         System.out.println("Testing clear method...");
         list.clear();
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             System.out.println("clear method works!");
         } else {
             System.out.println("clear method does not work!");
