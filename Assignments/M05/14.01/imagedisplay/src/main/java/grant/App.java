@@ -12,22 +12,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-
 public class App extends Application {
 
     private static Scene scene;
 
     @Override
     public void start(Stage stage) throws IOException {
-        Image flagImage1 = new Image("http://liveexample.pearsoncmg.com/book/image/us.gif");
-        Image flagImage2 = new Image("/Users/grantcoburn/Development/SDEV200/Assignments/M05/14.01/imagedisplay/src/main/java/grant/Images/flag1.gif");
-        Image flagImage3 = new Image("http://liveexample.pearsoncmg.com/book/image/us.gif");
-        Image flagImage4 = new Image("http://liveexample.pearsoncmg.com/book/image/us.gif");
-
-        ImageView flagImageView1 = new ImageView(flagImage1);
-        ImageView flagImageView2 = new ImageView(flagImage2);
-        ImageView flagImageView3 = new ImageView(flagImage3);
-        ImageView flagImageView4 = new ImageView(flagImage4);
+        String[] imageURLs = {
+                "https://github.com/coburnGrant/SDEV200/blob/53cf05469658d11aecfc941d14edd83689274ce4/Assignments/M05/14.01/imagedisplay/src/main/java/grant/Images/flag1.gif?raw=true",
+                "https://github.com/coburnGrant/SDEV200/blob/53cf05469658d11aecfc941d14edd83689274ce4/Assignments/M05/14.01/imagedisplay/src/main/java/grant/Images/flag2.gif?raw=true",
+                "https://github.com/coburnGrant/SDEV200/blob/53cf05469658d11aecfc941d14edd83689274ce4/Assignments/M05/14.01/imagedisplay/src/main/java/grant/Images/flag6.gif?raw=true",
+                "https://github.com/coburnGrant/SDEV200/blob/53cf05469658d11aecfc941d14edd83689274ce4/Assignments/M05/14.01/imagedisplay/src/main/java/grant/Images/flag7.gif?raw=true"
+        };
 
         GridPane pane = new GridPane();
 
@@ -36,10 +32,24 @@ public class App extends Application {
         pane.setHgap(10);
         pane.setVgap(10);
 
-        pane.add(flagImageView1, 0, 0);
-        pane.add(flagImageView2, 1, 0);
-        pane.add(flagImageView3, 0, 1);
-        pane.add(flagImageView4, 1, 1);
+        int row = 0;
+        int col = 0;
+        for(String url : imageURLs) {
+            Image image = new Image(url);
+            ImageView imageView = new ImageView(image);
+
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(100);
+
+            pane.add(imageView, row, col);
+
+            col++;
+
+            if(col > 1) {
+                col = 0;
+                row++;
+            }
+        }
 
         scene = new Scene(pane);
 
