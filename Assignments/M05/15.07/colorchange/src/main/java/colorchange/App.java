@@ -11,10 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
-/**
- * Write a program that displays the color of a circle as black when the mouse
- * button is pressed, and as white when the mouse button is released.
- */
 public class App extends Application {
 
     private static Scene scene;
@@ -22,29 +18,37 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Pane pane = new Pane();
+        
+        // Set grey background color
         pane.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
+        
+        // Set minimum pane size
         pane.setMinWidth(200);
         pane.setMinHeight(200);
 
         Circle circle = new Circle(50);
 
+        // Center circle in middle of pane
+        circle.centerXProperty().bind(pane.widthProperty().divide(2));
+        circle.centerYProperty().bind(pane.heightProperty().divide(2));
+
+        // Fill initial color black
+        circle.setFill(Color.BLACK);
+
+        // Change color to white on mouse press
         circle.setOnMousePressed(e -> {
             circle.setFill(Color.WHITE);
         });
 
+        // Change color back to black on mouse release
         circle.setOnMouseReleased(e -> {
             circle.setFill(Color.BLACK);
         });
 
-        circle.centerXProperty().bind(pane.widthProperty().divide(2));
-        circle.centerYProperty().bind(pane.heightProperty().divide(2));
-
-        circle.setFill(Color.BLACK);
-
         pane.getChildren().add(circle);
 
         scene = new Scene(pane);
-        
+
         stage.setScene(scene);
 
         stage.show();
