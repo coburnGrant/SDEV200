@@ -40,7 +40,7 @@ public class App extends Application {
         // Add all sliders to vBox and add event listener
         for(ColorSlider slider: sliders) {
             // Add sliders to the vbox with corresponding labels
-            addSliderToVBox(vbox, slider.sliderLabel, slider.slider);
+            addSliderToVBox(vbox, slider);
 
             // Add event listener for slider
             slider.slider.valueProperty().addListener(e -> {
@@ -78,10 +78,10 @@ public class App extends Application {
     }
 
     /** Adds slider name and text in a horizontal fashion to VBox */
-    private void addSliderToVBox(VBox vbox, String labelText, Slider slider) {
-        Text label = new Text(labelText);
+    private void addSliderToVBox(VBox vbox, ColorSlider colorSlider) {
+        Text label = new Text(colorSlider.sliderLabel);
 
-        HBox hBox = new HBox(10, label, slider);
+        HBox hBox = new HBox(10, label, colorSlider.slider);
 
         hBox.setAlignment(Pos.CENTER);
 
@@ -94,7 +94,7 @@ public class App extends Application {
         double green = greenSlider.getValue();
         double blue = blueSlider.getValue();
         double opacity = opacitySlider.getValue();
-        
+
         colorText.setFill(new Color(red, green, blue, opacity));
     }
 
