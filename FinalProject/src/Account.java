@@ -1,4 +1,4 @@
-package FinalProject.Classes;
+package FinalProject.src;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -73,13 +73,16 @@ public abstract class Account {
         sb.append("   Name='").append(name).append("'\n");
         sb.append("   Balance=").append(getFormattedBalance()).append("\n");
         sb.append("   Account Type=").append(accountType).append("\n");
-        sb.append("   Transactions=[\n");
-        
+        sb.append("   Transactions=[");
+
+        if (!transactions.isEmpty()) {
+            sb.append("\n");
+        }
+
         for (Transaction transaction : transactions) {
             sb.append("      ").append(transaction.toString().replace("\n", "\n      ")).append("\n");
         }
-        
-        sb.append("   ]\n");
+        sb.append("]\n");
         sb.append("}");
         return sb.toString();
     }

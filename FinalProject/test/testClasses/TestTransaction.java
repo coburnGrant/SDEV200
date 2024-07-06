@@ -1,6 +1,9 @@
-package FinalProject.Classes;
+package FinalProject.test.testClasses;
 
 import java.util.Date;
+
+import FinalProject.src.Transaction;
+import FinalProject.src.TransactionType;
 
 public class TestTransaction {
     public static final Transaction mcDonaldsTransaction = new Transaction("accountID", "McDonalds", 9.99, new Date(), TransactionType.WITHDRAWAL);

@@ -1,12 +1,14 @@
-package FinalProject.Classes;
+package FinalProject.src;
 
-public enum TransactionType {
-    DEPOSIT("Deposit"),
-    WITHDRAWAL("Withdrawal");
+public enum AccountType {
+    CHECKING("Checking Account"),
+    SAVINGS("Savings Account"),
+    INVESTMENT("Investment Account"),
+    DEFAULT("Default Account");
 
     private final String description;
 
-    TransactionType(String description) {
+    AccountType(String description) {
         this.description = description;
     }
 

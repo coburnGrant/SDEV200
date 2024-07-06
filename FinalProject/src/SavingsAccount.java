@@ -1,4 +1,4 @@
-package FinalProject.Classes;
+package FinalProject.src;
 
 public class SavingsAccount extends Account {
     double interestRate;

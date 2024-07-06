@@ -1,4 +1,8 @@
-package FinalProject.Classes;
+package FinalProject.test.testClasses;
+
+import FinalProject.src.Account;
+import FinalProject.src.CheckingAccount;
+import FinalProject.src.SavingsAccount;
 
 public class TestAccount {
     public static final SavingsAccount mySavingsAccount = new SavingsAccount("someUserID", "GS Bank Savings", 4.5);
