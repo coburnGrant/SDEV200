@@ -27,14 +27,21 @@ public class TestUser {
         checkingAccount.addTransaction(checkingTransaction);
         savingsAccount.addTransaction(savingsTransaction);
 
-        myUser.addAccount(checkingAccount);
-        myUser.addAccount(savingsAccount);
+        boolean addCheckingAccountResult = myUser.addAccount(checkingAccount);
+        String checkingResultText = addCheckingAccountResult ? "Successfully added" : "Failed to add";
+        System.out.println(checkingResultText + " " + checkingAccount.getName());
+
+        boolean addSavingsAccountResult = myUser.addAccount(savingsAccount);
+        String savingsResultText = addSavingsAccountResult ? "Successfully added" : "Failed to add";
+        System.out.println(savingsResultText + " " + savingsAccount.getName());
 
         printUser();
 
         System.out.println("removing account...");
 
-        myUser.removeAccount(savingsAccount);
+        boolean removeAccountResult = myUser.removeAccount(savingsAccount);
+        String removeResultText = removeAccountResult ? "Successfully removed" : "Failed to remove";
+        System.out.println(removeResultText + " " + savingsAccount.getName());
 
         printUser();
     }

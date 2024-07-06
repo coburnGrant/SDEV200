@@ -4,12 +4,22 @@ import java.util.Date;
 import java.util.UUID;
 
 public class Transaction {
+    /** Transaction's id */
     private final String transactionID;
+
+    /** Associated account id to this transaction */
     private final String accountID;
 
+    /** Main description of this transaction */
     private final String description;
+    
+    /** Dollar amount of this transaction */
     private final double amount;
+
+    /** Date of this transaction */
     private final Date date;
+    
+    /** Type of transaction */
     private final TransactionType type;
 
     /** Constructor for Transaction */
@@ -71,14 +81,18 @@ public class Transaction {
     /** Overridden toString method to represent the transaction object and its properties. */
     @Override
     public String toString() {
-        return "Transaction {\n" +
-                "    Transaction ID='" + transactionID + "'\n" +
-                "    Account ID='" + accountID + "'\n" +
-                "    Description='" + description + "'\n" +
-                "    Amount=" + getAmountDescription() + "\n" +
-                "    Date=" + date + "\n" +
-                "    Type=" + type + "\n" +
-                "}";
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Transaction { \n");
+        sb.append("    Transaction ID='").append(transactionID).append("'\n");
+        sb.append("    Account ID='").append(accountID).append("'\n");
+        sb.append("    Description='").append(description).append("'\n");
+        sb.append("    Amount='").append(getAmountDescription()).append("'\n");
+        sb.append("    Date='").append(date).append("'\n");
+        sb.append("    Type='").append(type).append("'\n");
+        sb.append("}");
+
+        return sb.toString();
     }
 
     /** Returns the double value formatted into standard money formatting. Ex. $4.50 */
