@@ -67,23 +67,25 @@ public class User {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("User {");
-        sb.append("User ID='").append(userID).append('\'');
-        sb.append(", First Name='").append(firstName).append('\'');
-        sb.append(", Last Name='").append(lastName).append('\'');
-        sb.append(", Full Name='").append(getFullName()).append('\'');
-        sb.append(", Net Worth=").append(getNetWorth());
-        sb.append(", Accounts=[");
-
+        sb.append("User {\n");
+        sb.append("   User ID='").append(userID).append("'\n");
+        sb.append("   First Name='").append(firstName).append("'\n");
+        sb.append("   Last Name='").append(lastName).append("'\n");
+        sb.append("   Full Name='").append(getFullName()).append("'\n");
+        sb.append("   Net Worth=").append(getNetWorth()).append("\n");
+        sb.append("   Accounts=[\n");
+    
         for (Account account : accounts) {
-            sb.append(account.toString()).append(", ");
+            sb.append("      ").append(account.toString().replace("\n", "\n      ")).append(",\n");
         }
-
+    
         if (!accounts.isEmpty()) {
-            sb.setLength(sb.length() - 2); // Remove trailing comma and space
+            sb.setLength(sb.length() - 2); // Remove trailing comma and newline
+            sb.append("\n");
         }
-
-        sb.append("]}");
+    
+        sb.append("   ]\n");
+        sb.append("}");
         return sb.toString();
     }
 }
