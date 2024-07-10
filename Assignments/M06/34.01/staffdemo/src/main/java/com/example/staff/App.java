@@ -15,6 +15,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -27,7 +29,10 @@ public class App extends Application {
 
     StackPane pane;
 
-    Text connectionText;
+    Text connectionStatusText;
+    Circle connectionStatusCircle;
+
+    Text resultText;
 
     LabeledTextField idField;
     LabeledTextField firstNameField;
@@ -49,43 +54,15 @@ public class App extends Application {
         // Create pane with views
         createPane();
 
-        // Update connection text based on connection
-        String connectionResultString = connection == null ? "Failed to connect to database" : "Connected to database";
-
-        connectionText.setText(connectionResultString);
-
         scene = new Scene(pane);
         stage.setScene(scene);
         stage.setTitle("Staff Management System");
         stage.show();
     }
 
-    private void createPane() {
-        pane = new StackPane();
-        pane.setPadding(new Insets(20));
+    // MARK: DB Connection
 
-        initializeViews();
-
-        VBox form = createForm();
-
-        pane.getChildren().add(form);
-
-        pane.autosize();
-    }
-
-    private void initializeViews() {
-        connectionText = new Text();
-        idField = new LabeledTextField("ID");
-        firstNameField = new LabeledTextField("First Name");
-        lastNameField = new LabeledTextField("Last Name");
-        miField = new LabeledTextField("MI");
-        addressField = new LabeledTextField("Address");
-        cityField = new LabeledTextField("City");
-        stateField = new LabeledTextField("State");
-        telephoneField = new LabeledTextField("Telephone");
-        emailField = new LabeledTextField("Email");
-    }
-
+    /** Attempts to establish a connection to the mysql database */
     private void establishConnection() {
         try {
             String dbURL = getSqlUrl(HOST, PORT, DB_NAME);
@@ -102,10 +79,59 @@ public class App extends Application {
         }
     }
 
+    /** Helper function to format a sql url string */
+    public static String getSqlUrl(String host, int port, String dbName) {
+        return String.format("jdbc:mysql://%s:%d/%s", host, port, dbName);
+    }
+
+    /** Creates the main stack pane */
+    private void createPane() {
+        pane = new StackPane();
+        pane.setPadding(new Insets(20));
+
+        initializeViews();
+
+        VBox form = createForm();
+
+        pane.getChildren().add(form);
+
+        pane.autosize();
+    }
+
+    /** Initializes all nodes */
+    private void initializeViews() {
+        // Create connection text based on connection status
+        String connectionResultString = connection == null ? "Failed to connect to database" : "Connected to database";
+        connectionStatusText = new Text(connectionResultString);
+
+        // Make connection circle based on connection status
+        connectionStatusCircle = new Circle(5);
+        connectionStatusCircle.setFill(connection == null ? Color.RED : Color.LIME);
+
+        // Make empty text for result
+        resultText = new Text("");
+
+        // Make text fields
+        idField = new LabeledTextField("ID");
+        firstNameField = new LabeledTextField("First Name");
+        lastNameField = new LabeledTextField("Last Name");
+        miField = new LabeledTextField("MI");
+        addressField = new LabeledTextField("Address");
+        cityField = new LabeledTextField("City");
+        stateField = new LabeledTextField("State");
+        telephoneField = new LabeledTextField("Telephone");
+        emailField = new LabeledTextField("Email");
+    }
+
+    /** Adds all text fields to a VBox */
     private VBox createForm() {
         VBox vbox = new VBox(10);
         vbox.setAlignment(Pos.TOP_LEFT);
         vbox.setPadding(new Insets(20));
+
+        HBox connectionHBox = new HBox(5);
+        connectionHBox.setAlignment(Pos.CENTER_LEFT);
+        connectionHBox.getChildren().addAll(connectionStatusText, connectionStatusCircle);
 
         HBox staffNameHBox = new HBox(10);
         staffNameHBox.setAlignment(Pos.CENTER_LEFT);
@@ -119,6 +145,7 @@ public class App extends Application {
         userContactHBox.setAlignment(Pos.CENTER_LEFT);
         userContactHBox.getChildren().addAll(telephoneField.getHBox(), emailField.getHBox());
 
+        // Make buttons
         Button viewButton = new Button("View");
         viewButton.setOnAction(e -> viewClicked());
 
@@ -136,7 +163,8 @@ public class App extends Application {
         buttonsHBox.getChildren().addAll(viewButton, insertButton, updateButton, clearButton);
 
         vbox.getChildren().addAll(
-                connectionText,
+                connectionHBox,
+                resultText,
                 idField.getHBox(),
                 staffNameHBox,
                 addressField.getHBox(),
@@ -147,6 +175,9 @@ public class App extends Application {
         return vbox;
     }
 
+    // MARK: Button Event handlers
+
+    /** Handles view button clicked event */
     private void viewClicked() {
         System.out.println("View Clicked!");
 
@@ -170,22 +201,27 @@ public class App extends Application {
                 String telephone = result.getString("telephone");
                 String email = result.getString("email");
 
-                String info = String.format("ID: %s\nName: %s %s %s\nAddress: %s, %s, %s\nContact: %s, %s",
-                        id, firstName, mi, lastName, address, city, state, telephone, email);
+                resultText.setText("Found staff member with ID: " + id);
 
-                connectionText.setText("Found staff member:\n" + info);
-
-                clearFields();
+                firstNameField.setText(firstName);
+                lastNameField.setText(lastName);
+                miField.setText(mi);
+                addressField.setText(address);
+                cityField.setText(city);
+                stateField.setText(state);
+                telephoneField.setText(telephone);
+                emailField.setText(email);
             } else {
-                connectionText.setText("No staff member found with ID: " + id);
+                resultText.setText("No staff member found with ID: " + id);
             }
-        } catch (SQLException e) {
-            connectionText.setText("Could not view staff member with ID: " + id);
+        } catch (Exception e) {
+            resultText.setText("Could not view staff member with ID: " + id);
 
             e.printStackTrace();
         }
     }
 
+    /** Handles insert button clicked event */
     private void insertClicked() {
         System.out.println("Insert Clicked!");
         // Get values from text fields
@@ -199,12 +235,10 @@ public class App extends Application {
         String telephone = telephoneField.getText();
         String email = emailField.getText();
 
-        // Prepare SQL query
         String sql = "INSERT INTO Staff (id, lastName, firstName, mi, address, city, state, telephone, email) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            // Create prepared statement
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, id);
             statement.setString(2, lastName);
@@ -216,21 +250,21 @@ public class App extends Application {
             statement.setString(8, telephone);
             statement.setString(9, email);
 
-            // Execute the insert statement
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                connectionText.setText("A new staff member was inserted successfully!");
+                resultText.setText("A new staff member was inserted successfully!");
                 System.out.println("A new staff member was inserted successfully!");
 
                 clearFields();
             }
-        } catch (SQLException e) {
-            connectionText.setText("Error inserting staff member!");
+        } catch (Exception e) {
+            resultText.setText("Error inserting staff member!");
             System.out.println("Error inserting staff member!");
             e.printStackTrace();
         }
     }
 
+    /** Handles update button clicked event */
     private void updateClicked() {
         System.out.println("Update Clicked!");
 
@@ -245,11 +279,11 @@ public class App extends Application {
         String email = emailField.getText();
 
         String sql = "UPDATE Staff " +
-                     "SET firstName = ?, lastName = ?, mi = ?, address = ?, city = ?, state = ?, telephone = ?, email = ?" +
-                     "WHERE id = ?";
+                "SET firstName = ?, lastName = ?, mi = ?, address = ?, city = ?, state = ?, telephone = ?, email = ?" +
+                "WHERE id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            
+
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setString(3, mi);
@@ -261,41 +295,40 @@ public class App extends Application {
             statement.setString(9, id);
 
             int rowUpdatedCount = statement.executeUpdate();
-            if(rowUpdatedCount > 0) {
-                connectionText.setText("Successfully updated staff member with id " + id + "'s info");
+            if (rowUpdatedCount > 0) {
+                resultText.setText("Successfully updated staff member with id " + id + "'s info");
 
                 clearFields();
             } else {
-                connectionText.setText("Failed to update staff member with id " + id + "'s info");
+                resultText.setText("Failed to update staff member with id " + id + "'s info");
             }
-        } catch (SQLException e) {
-            connectionText.setText("Failed to update staff member with id " + id + "'s info");
+        } catch (Exception e) {
+            resultText.setText("Failed to update staff member with id " + id + "'s info");
 
             e.printStackTrace();
         }
     }
 
+    /** Handles clear button clicked event */
+    private void clearClicked() {
+        System.out.println("Clear Clicked!");
+        resultText.setText("");
+        clearFields();
+    }
+
+    /** Returns list of all text fields */
     private LabeledTextField[] getFields() {
         return new LabeledTextField[] { idField, lastNameField, firstNameField, miField, addressField, cityField,
                 stateField, telephoneField, emailField };
     }
 
-    private void clearClicked() {
-        System.out.println("Clear Clicked!");
-
-        clearFields();
-    }
-
+    /** Clears all of the text in the text fields */
     private void clearFields() {
         LabeledTextField[] fields = getFields();
 
         for (LabeledTextField field : fields) {
             field.clearText();
         }
-    }
-
-    public static String getSqlUrl(String host, int port, String dbName) {
-        return String.format("jdbc:mysql://%s:%d/%s", host, port, dbName);
     }
 
     public static void main(String[] args) {
