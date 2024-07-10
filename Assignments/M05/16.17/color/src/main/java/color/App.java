@@ -94,7 +94,6 @@ public class App extends Application {
         double green = greenSlider.getValue();
         double blue = blueSlider.getValue();
         double opacity = opacitySlider.getValue();
-
         colorText.setFill(new Color(red, green, blue, opacity));
     }
 

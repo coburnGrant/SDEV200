@@ -45,8 +45,6 @@ public class App extends Application {
             circle.setFill(Color.BLACK);
         });
 
-        pane.getChildren().add(circle);
-
         scene = new Scene(pane);
 
         stage.setScene(scene);
