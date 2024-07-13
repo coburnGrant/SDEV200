@@ -2,6 +2,8 @@ package grant.view;
 
 import grant.UIHelpers;
 import grant.model.Account;
+import grant.model.AccountType;
+import grant.model.SavingsAccount;
 import grant.model.Transaction;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -60,12 +62,29 @@ public class AccountDetailView extends BorderPane {
 
         balanceHBox.getChildren().addAll(subtitle, balanceText);
 
+        accountDetails.getChildren().add(balanceHBox);
+
         // Create list of transactions
         Text transactionSubtitleText = UIHelpers.subtitleText("Transactions");
         Button newTransactionButton = UIHelpers.createSimpleButton("Add new transaction +");
         newTransactionButton.setOnAction(e -> displayCreateNewTransaction());
+        
+        if(account.getAccountType() == AccountType.SAVINGS) {
+            SavingsAccount savingsAccount = (SavingsAccount) account;
 
-        accountDetails.getChildren().addAll(balanceHBox, transactionSubtitleText, newTransactionButton);
+            HBox interestRateBox = new HBox(10);
+            interestRateBox.setAlignment(Pos.BASELINE_LEFT);
+
+            Text interestRateLabel = UIHelpers.subtitleText("Interest Rate:");
+
+            Text interestRateText = UIHelpers.createText(savingsAccount.getInterestRateDescription(), FontWeight.BOLD, 20);
+
+            interestRateBox.getChildren().addAll(interestRateLabel, interestRateText);
+
+            accountDetails.getChildren().add(interestRateBox);
+        }
+
+        accountDetails.getChildren().addAll(transactionSubtitleText, newTransactionButton);
 
         for (Transaction transaction : account.getSortedTransactions()) {
             TransactionRowView row = new TransactionRowView(transaction, e -> deleteTransaction(transaction), e -> showEditTransaction(transaction));

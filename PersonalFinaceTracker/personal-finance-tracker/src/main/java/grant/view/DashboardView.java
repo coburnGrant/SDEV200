@@ -44,10 +44,10 @@ public class DashboardView extends BorderPane {
         dashboard.getChildren().add(helloText);
 
         // Create net worth text
-        Text netWorthLabel = UIHelpers.primaryText("Net Worth:", 20);
-        Text netWorthValue = UIHelpers.primaryText(user.getFormattedNetWorth(), 16);
+        Text netWorthLabel = UIHelpers.subtitleText("Net Worth:");
+        Text netWorthValue = UIHelpers.createText(user.getFormattedNetWorth(), FontWeight.BOLD, 20);
 
-        HBox netWorthBox = new HBox(10);
+        HBox netWorthBox = new HBox(5);
         netWorthBox.setAlignment(Pos.CENTER_LEFT);
         netWorthBox.getChildren().addAll(netWorthLabel, netWorthValue);
         dashboard.getChildren().add(netWorthBox);

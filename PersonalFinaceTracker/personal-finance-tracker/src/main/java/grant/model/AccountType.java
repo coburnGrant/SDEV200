@@ -6,10 +6,7 @@ public enum AccountType {
     CHECKING("Checking Account"),
 
     /** An account that is a savings account */
-    SAVINGS("Savings Account"),
-
-    /** An account that is used for investing */
-    INVESTMENT("Investment Account");
+    SAVINGS("Savings Account");
 
     /** Textual representation of the type of account */
     private final String description;
