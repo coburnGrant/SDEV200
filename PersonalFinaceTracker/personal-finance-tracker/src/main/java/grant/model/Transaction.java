@@ -12,16 +12,16 @@ public class Transaction {
     private final String accountID;
 
     /** Main description of this transaction */
-    private final String description;
+    private String description;
     
     /** Dollar amount of this transaction */
-    private final double amount;
+    private double amount;
 
     /** Date of this transaction */
-    private final Date date;
+    private Date date;
     
     /** Type of transaction */
-    private final TransactionType type;
+    private TransactionType type;
 
     /** Constructor for Transaction */
     public Transaction(String accountID, String description, double amount, Date date, TransactionType type) {
@@ -82,6 +82,13 @@ public class Transaction {
         return description + "- " + getAmountDescription() + ". At " + date.toString();
     }
 
+    public void updateWith(Transaction transaction) {
+        this.type = transaction.getType();
+        this.description = transaction.getDescription();
+        this.amount = transaction.getAmount();
+        this.date = transaction.getDate();
+    }
+
     /** Overridden toString method to represent the transaction object and its properties. */
     @Override
     public String toString() {
@@ -98,7 +105,7 @@ public class Transaction {
 
         return sb.toString();
     }
-    
+
     /** Returns the double value formatted into standard money formatting. Ex. $4.50 */
     public static String formatDoubleToMoney(double amount) {
         NumberFormat formatter = NumberFormat.getCurrencyInstance();

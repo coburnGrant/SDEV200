@@ -5,8 +5,12 @@ import java.text.SimpleDateFormat;
 import grant.UIHelpers;
 import grant.model.Transaction;
 import grant.model.TransactionType;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -20,15 +24,25 @@ import javafx.scene.text.Text;
 public class TransactionRowView extends HBox {
     private final Transaction transaction;
     private final SimpleDateFormat dateFormat;
+    private final EventHandler<ActionEvent> handleTransactionDeletion;
+    private final EventHandler<ActionEvent> handleTransactionEdit;
+
     private Text descriptionText;
     private Text amountText;
     private Text dateText;
 
-    public TransactionRowView(Transaction transaction) {
+    public TransactionRowView(Transaction transaction, EventHandler<ActionEvent> handleTransactionDeletion, EventHandler<ActionEvent> handleTransactionEdit) {
         this.transaction = transaction;
+        this.handleTransactionDeletion = handleTransactionDeletion;
+        this.handleTransactionEdit = handleTransactionEdit;
+
         this.dateFormat = new SimpleDateFormat("E MMM dd");
 
         setupUI();
+
+        if (handleTransactionDeletion != null && handleTransactionEdit != null) {
+            setupContextMenu();
+        }
     }
 
     /** Initializes UI for row */
@@ -54,5 +68,30 @@ public class TransactionRowView extends HBox {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         getChildren().addAll(descriptionText, dateText, spacer, amountText);
+    }
+
+    /** Sets up the context menu for deleting the transaction */
+    private void setupContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem deleteItem = new MenuItem("Delete");
+        deleteItem.setOnAction(e -> {
+            System.out.println("Deleting transaction: " + transaction);
+            handleTransactionDeletion.handle(e);
+        });
+
+        MenuItem editItem = new MenuItem("Edit");
+        editItem.setOnAction(e -> {
+            System.out.println("Editing transaction: " + transaction);
+            handleTransactionEdit.handle(e);
+        });
+
+        contextMenu.getItems().addAll(editItem, deleteItem);
+
+        // Show context menu on right-click
+        this.setOnContextMenuRequested(e -> {
+            contextMenu.show(this, e.getScreenX(), e.getScreenY());
+            e.consume(); // Consume event to prevent it from being handled further
+        });
     }
 }

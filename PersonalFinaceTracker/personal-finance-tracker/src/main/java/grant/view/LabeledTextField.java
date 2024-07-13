@@ -28,21 +28,27 @@ public class LabeledTextField extends HBox {
     public void setText(String text) {
         textField.setText(text);
     }
-    
-/** Adds a listener to the text field to ensure only numbers and decimals are entered */
-public void setNumbersOnly() {
-    textField.textProperty().addListener((observable, oldValue, newValue) -> {
-        if (!newValue.matches("\\d*\\.?\\d*")) {
-            textField.setText(newValue.replaceAll("[^\\d.]", ""));
-            // Ensure only one decimal point
-            int index = textField.getText().indexOf(".");
-            if (index != -1) {
-                textField.setText(textField.getText().substring(0, index + 1) +
-                    textField.getText().substring(index + 1).replaceAll("\\.", ""));
+
+    /** Adds a listener to the text field to ensure only numbers and decimals are entered */
+    public void setNumbersOnly() {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                textField.setText(newValue.replaceAll("[^\\d.]", ""));
+                // Ensure only one decimal point
+                int index = textField.getText().indexOf(".");
+                if (index != -1) {
+                    textField.setText(textField.getText().substring(0, index + 1) +
+                            textField.getText().substring(index + 1).replaceAll("\\.", ""));
+                }
             }
-        }
-    });
-}
+        });
+    }
+
+    /** Attempts to get a double value from the text field */
+    public double getDoubleValue() {
+        return Double.parseDouble(getText());
+    }
+
 
     /** Sets the textField's text an empty string */
     public void clearText() {

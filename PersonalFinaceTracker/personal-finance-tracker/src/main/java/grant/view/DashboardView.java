@@ -61,7 +61,7 @@ public class DashboardView extends BorderPane {
         transactionBox.getChildren().add(transactionsTitle);
 
         for (Transaction transaction : user.getRecentTransactions()) {
-            TransactionRowView row = new TransactionRowView(transaction);
+            TransactionRowView row = new TransactionRowView(transaction, null, null);
 
             transactionBox.getChildren().add(row);
         }
