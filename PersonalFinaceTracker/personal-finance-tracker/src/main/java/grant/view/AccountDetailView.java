@@ -10,6 +10,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -18,10 +20,14 @@ import javafx.scene.text.Text;
 
 public class AccountDetailView extends BorderPane {
     private final Account account;
-    private EventHandler<ActionEvent> backButtonHandler;
+    private final EventHandler<ActionEvent> backButtonHandler;
+    private final EventHandler<ActionEvent> deleteAccountHandler;
 
-    public AccountDetailView(Account account) {
+
+    public AccountDetailView(Account account, EventHandler<ActionEvent> backButtonHandler, EventHandler<ActionEvent> deleteAccountHandler) {
         this.account = account;
+        this.backButtonHandler = backButtonHandler;
+        this.deleteAccountHandler = deleteAccountHandler;
 
         VBox accountDetails = createAccountDetails();
 
@@ -72,12 +78,17 @@ public class AccountDetailView extends BorderPane {
         Button backButton = UIHelpers.createSimpleButton("←");
         backButton.setOnAction(e -> backButtonHandler.handle(e));
 
-        topPane.getChildren().addAll(backButton, accountTitle);
+        // Create spacer
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        // Create delete button
+        Button deleteButton = UIHelpers.createSimpleButton("Delete");
+        deleteButton.setTextFill(Color.RED);
+        deleteButton.setOnAction(e -> deleteAccountHandler.handle(e));
+
+        topPane.getChildren().addAll(backButton, accountTitle, spacer, deleteButton);
 
         return topPane;
-    }
-
-    public void setOnBackButtonPressed(EventHandler<ActionEvent> handler) {
-        this.backButtonHandler = handler;
     }
 }

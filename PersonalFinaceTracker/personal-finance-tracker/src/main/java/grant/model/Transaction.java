@@ -1,5 +1,6 @@
 package grant.model;
 
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -97,10 +98,10 @@ public class Transaction {
 
         return sb.toString();
     }
-
+    
     /** Returns the double value formatted into standard money formatting. Ex. $4.50 */
     public static String formatDoubleToMoney(double amount) {
-        String prefix = amount < 0 ? "-" : "";
-        return prefix + "$" + String.format("%.2f", Math.abs(amount));
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        return formatter.format(amount);
     }
 }

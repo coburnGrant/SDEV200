@@ -78,6 +78,7 @@ public class User {
      */
     public boolean removeAccount(Account account) {
         boolean result = accounts.remove(account);
+        notifyObservers();
         return result;
     }
 

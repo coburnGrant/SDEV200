@@ -18,6 +18,7 @@ public class AccountsListView extends BorderPane implements UserObserver {
     private final Text title;
 
     private final VBox accountList;
+    private final VBox accountDetails;
     
     private CreateAccountView createAccountView;
 
@@ -37,14 +38,13 @@ public class AccountsListView extends BorderPane implements UserObserver {
         Button createNewAccountBtn = UIHelpers.createSimpleButton("Create new account +");
         createNewAccountBtn.setOnAction(e -> displayCreateNewAccountPanel());
 
-        VBox accountDetails = new VBox(20);
+        accountDetails = new VBox(20);
         accountDetails.setPadding(new Insets(20));
         accountDetails.setAlignment(Pos.TOP_LEFT);
 
         addAccounts();
 
         accountDetails.getChildren().addAll(createNewAccountBtn, accountList);
-
 
         setTop(title);
         setCenter(accountDetails);
@@ -60,19 +60,18 @@ public class AccountsListView extends BorderPane implements UserObserver {
         accountList.getChildren().clear();
 
         for (Account account : user.getAccounts()) {
-            AccountRowView accountDetails = new AccountRowView(account);
+            AccountRowView accountRow = new AccountRowView(account);
             
             // Set on row clicked
-            accountDetails.setOnRowClicked(e -> showAccountDetails(account));
+            accountRow.setOnRowClicked(e -> showAccountDetails(account));
             
-            accountList.getChildren().add(accountDetails);
+            accountList.getChildren().add(accountRow);
         }
     }
 
     /** Displays the account detail view */
     private void showAccountDetails(Account account) {
-        AccountDetailView detailView = new AccountDetailView(account);
-        detailView.setOnBackButtonPressed(e -> closeAccountDetails());
+        AccountDetailView detailView = new AccountDetailView(account, e -> closeAccountDetails(), e -> deleteAccount(account));
         
         setTop(null);
         setCenter(detailView);
@@ -82,7 +81,15 @@ public class AccountsListView extends BorderPane implements UserObserver {
     private void closeAccountDetails() {
         System.out.println("closing account details...");
         setTop(title);
-        setCenter(accountList);
+        setCenter(accountDetails);
+    }
+
+    private void deleteAccount(Account account) {
+        System.out.println("Deleting account! \n" + account);
+        boolean result = user.removeAccount(account);
+        System.out.println("Removed account: " + result);
+
+        closeAccountDetails();
     }
 
     private void displayCreateNewAccountPanel() {
