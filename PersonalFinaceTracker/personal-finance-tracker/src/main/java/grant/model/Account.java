@@ -94,6 +94,12 @@ public abstract class Account {
         return result;
     }
 
+    /** Edits a transaction */
+    public void editTransaction(Transaction oldTransaction, Transaction newTransaction) {
+        removeTransaction(oldTransaction);
+        addTransaction(newTransaction);
+    }
+
     /** Getter for account type */
     public AccountType getAccountType() {
         return accountType;

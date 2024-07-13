@@ -129,14 +129,17 @@ public class User {
         return Transaction.formatDoubleToMoney(getNetWorth());
     }
 
+    /** Adds observer to user */
     public void addObserver(UserObserver observer) {
         observers.add(observer);
     }
 
+    /** Removes observer from user */
     public void removeObserver(UserObserver observer) {
         observers.remove(observer);
     }
 
+    /** Notifies observes of updates */
     private void notifyObservers() {
         for (UserObserver observer : observers) {
             observer.update();

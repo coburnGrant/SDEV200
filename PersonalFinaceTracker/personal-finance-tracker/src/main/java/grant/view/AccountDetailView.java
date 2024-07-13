@@ -98,12 +98,14 @@ public class AccountDetailView extends BorderPane {
         header.getChildren().addAll(backButton, accountTitle, spacer, deleteButton);
     }
 
+    /** Refreshes and redraws account details */
     private void refreshDetails() {
         accountDetails.getChildren().clear();
         createAccountDetails();
         setCenter(accountDetails);
     }
 
+    /** Displays a window to create a new transaction */
     private void displayCreateNewTransaction() {
         System.out.println("Creating new transaction!");
         createTransactionView = new CreateTransactionView(account, e -> addNewTransaction());
@@ -117,6 +119,7 @@ public class AccountDetailView extends BorderPane {
         createTransactionStage.show();
     }
 
+    /** Adds a new transaction to this account */
     private void addNewTransaction() {
         Transaction transaction = createTransactionView.getTransaction();
 
@@ -130,6 +133,7 @@ public class AccountDetailView extends BorderPane {
         }
     }
 
+    /** Deletes a transaction from this account */
     private void deleteTransaction(Transaction transaction) {
         boolean result = account.removeTransaction(transaction);
 
@@ -138,6 +142,7 @@ public class AccountDetailView extends BorderPane {
         }
     }
 
+    /** Displays window to edit existing transaction */
     private void showEditTransaction(Transaction transaction) {
         createTransactionView = new CreateTransactionView(account, e -> saveEditTransaction(transaction));
         createTransactionView.editTransaction(transaction);
@@ -158,8 +163,9 @@ public class AccountDetailView extends BorderPane {
     private void saveEditTransaction(Transaction transaction) {
         System.out.println("Updating transaction...");
         Transaction newTransaction = createTransactionView.getTransaction();
-        transaction.updateWith(newTransaction);
-        
+        account.editTransaction(transaction, newTransaction);
+
+
         refreshDetails();
         closeCreateTransactionStage();
     }
