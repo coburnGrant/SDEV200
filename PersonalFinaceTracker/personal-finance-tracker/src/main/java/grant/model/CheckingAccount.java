@@ -1,4 +1,4 @@
-package grant;
+package grant.model;
 
 /** Class to represent a checking account */
 public class CheckingAccount extends Account {

@@ -1,6 +1,6 @@
-package grant;
+package grant.model;
 
-/** Enum for respresenting a type of transaction */
+/** Enum for representing a type of transaction */
 public enum TransactionType {
     /** A transaction that is a deposit into an account */
     DEPOSIT("Deposit"),

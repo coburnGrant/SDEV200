@@ -1,4 +1,4 @@
-package grant;
+package grant.model;
 
 import java.util.Date;
 import java.util.UUID;
@@ -69,8 +69,11 @@ public class Transaction {
 
     /** Returns a string representing the signed transaction amount with standard money formatting */
     public String getAmountDescription() {
-        String sign = type == TransactionType.WITHDRAWAL ? "-" : "";
-        return sign + Transaction.formatDoubleToMoney(amount);
+        return formatDoubleToMoney(this.signedAmount());
+    }
+
+    public String getPlusMinusAmountDescription() {
+        return (this.signedAmount() > 0 ? "+" : "") + getAmountDescription();
     }
 
     /** Returns a simple transaction description. "(description) - $(amount). At (date)"" */
@@ -97,6 +100,7 @@ public class Transaction {
 
     /** Returns the double value formatted into standard money formatting. Ex. $4.50 */
     public static String formatDoubleToMoney(double amount) {
-        return "$" + String.format("%.2f", amount);
+        String prefix = amount < 0 ? "-" : "";
+        return prefix + "$" + String.format("%.2f", Math.abs(amount));
     }
 }

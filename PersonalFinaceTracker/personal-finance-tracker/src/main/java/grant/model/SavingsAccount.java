@@ -1,4 +1,4 @@
-package grant;
+package grant.model;
 
 public class SavingsAccount extends Account {
     /** Interest rate this savings account has */

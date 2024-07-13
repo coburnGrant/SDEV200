@@ -1,4 +1,4 @@
-package grant;
+package grant.model;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -58,7 +58,7 @@ public abstract class Account {
     }
 
     /** Getter for account's list of transactions */
-    public ArrayList<Transaction> geTransactions() {
+    public ArrayList<Transaction> getTransactions() {
         return transactions;
     }
 

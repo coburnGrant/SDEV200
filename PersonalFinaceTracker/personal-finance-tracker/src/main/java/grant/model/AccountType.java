@@ -1,4 +1,4 @@
-package grant;
+package grant.model;
 
 /** Enum for representing a type of account */
 public enum AccountType {

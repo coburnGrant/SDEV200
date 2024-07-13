@@ -1,4 +1,4 @@
-package grant;
+package grant.model;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -84,6 +84,10 @@ public class User {
         }
 
         return netWorth;
+    }
+
+    public String getFormattedNetWorth() {
+        return Transaction.formatDoubleToMoney(getNetWorth());
     }
 
     /** Returns a string object representation of the user */
