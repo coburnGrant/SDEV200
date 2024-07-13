@@ -4,7 +4,7 @@ package grant.model;
 public class CheckingAccount extends Account {
 
     /** Constructor for a checking account */
-    public CheckingAccount(String userID, String name) {
-        super(userID, name, AccountType.CHECKING);
+    public CheckingAccount(String userID, String name, double initialBalance) {
+        super(userID, name, AccountType.CHECKING, initialBalance);
     }
 }

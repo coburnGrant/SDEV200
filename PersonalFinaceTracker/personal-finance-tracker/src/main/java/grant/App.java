@@ -90,7 +90,7 @@ public class App extends Application {
 
     /** Displays account list view */
     private void showAccounts() {
-        AccountsListView accountsView = new AccountsListView(testUser.getAccounts());
+        AccountsListView accountsView = new AccountsListView(testUser);
         ScrollPane scrollPane = new ScrollPane();
     
         scrollPane.setFitToWidth(true);
@@ -104,8 +104,8 @@ public class App extends Application {
     private void initTestUser() {
         testUser = new User("Grant", "Coburn");
     
-        CheckingAccount checkingAccount = new CheckingAccount(testUser.getUserID(), "My Checking Account");
-        SavingsAccount savingsAccount = new SavingsAccount(testUser.getUserID(), "My Savings Account", 4.5);
+        CheckingAccount checkingAccount = new CheckingAccount(testUser.getUserID(), "My Checking Account", 1000);
+        SavingsAccount savingsAccount = new SavingsAccount(testUser.getUserID(), "My Savings Account", 4.5, 1000);
     
         // Adding transactions to Checking Account
         checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "McDonalds", 10.99, new Date(), TransactionType.WITHDRAWAL));

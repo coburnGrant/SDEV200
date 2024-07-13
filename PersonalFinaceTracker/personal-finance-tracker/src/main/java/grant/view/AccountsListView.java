@@ -1,22 +1,30 @@
 package grant.view;
 
-import java.util.ArrayList;
-
 import grant.UIHelpers;
 import grant.model.Account;
+import grant.model.User;
+import grant.model.UserObserver;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-public class AccountsListView extends BorderPane {
+public class AccountsListView extends BorderPane implements UserObserver {
+    private final User user;
     private final Text title;
-    private final ArrayList<Account> accounts;
-    private final VBox accountList;
 
-    public AccountsListView(ArrayList<Account> accounts) {
-        this.accounts = accounts;
+    private final VBox accountList;
+    
+    private CreateAccountView createAccountView;
+
+    public AccountsListView(User user) {
+        this.user = user;
+        user.addObserver(this);
+
         setPadding(new Insets(20));
         setBackground(UIHelpers.PRIMARY_BACKGROUND);
 
@@ -26,10 +34,20 @@ public class AccountsListView extends BorderPane {
         accountList.setPadding(new Insets(20));
         accountList.setAlignment(Pos.TOP_LEFT);
 
+        Button createNewAccountBtn = UIHelpers.createSimpleButton("Create new account +");
+        createNewAccountBtn.setOnAction(e -> displayCreateNewAccountPanel());
+
+        VBox accountDetails = new VBox(20);
+        accountDetails.setPadding(new Insets(20));
+        accountDetails.setAlignment(Pos.TOP_LEFT);
+
         addAccounts();
 
+        accountDetails.getChildren().addAll(createNewAccountBtn, accountList);
+
+
         setTop(title);
-        setCenter(accountList);
+        setCenter(accountDetails);
     }
 
     /** Gets a the list of accounts in a VBox */
@@ -39,7 +57,9 @@ public class AccountsListView extends BorderPane {
 
     /** Adds list of accounts rows to list */
     private void addAccounts() {
-        for (Account account : accounts) {
+        accountList.getChildren().clear();
+
+        for (Account account : user.getAccounts()) {
             AccountRowView accountDetails = new AccountRowView(account);
             
             // Set on row clicked
@@ -63,5 +83,30 @@ public class AccountsListView extends BorderPane {
         System.out.println("closing account details...");
         setTop(title);
         setCenter(accountList);
+    }
+
+    private void displayCreateNewAccountPanel() {
+        System.out.println("new account button clicked!");
+        
+        createAccountView = new CreateAccountView(user, e -> createAccount());
+
+        Scene scene = new Scene(createAccountView, 400, 200);
+        Stage stage = new Stage();
+        stage.setTitle("Create New Account");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void createAccount() {
+        Account newAccount = createAccountView.getAccount();
+
+        System.out.println("Creating new account: \n" + newAccount);
+
+        user.addAccount(newAccount);
+    }
+
+    @Override
+    public void update() {
+        addAccounts();
     }
 }

@@ -73,7 +73,7 @@ public class DashboardView extends BorderPane {
 
         Text accountsTitle = UIHelpers.subtitleText("Accounts");
 
-        VBox accountList = new AccountsListView(user.getAccounts()).getAccountList();
+        VBox accountList = new AccountsListView(user).getAccountList();
         accountList.setPadding(new Insets(0));
 
         accountsBox.getChildren().addAll(accountsTitle, accountList);

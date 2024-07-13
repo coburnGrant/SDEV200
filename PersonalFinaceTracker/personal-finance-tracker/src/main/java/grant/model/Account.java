@@ -23,11 +23,11 @@ public abstract class Account {
     private final AccountType accountType;
 
     /** Constructor for Account */
-    public Account(String userID, String name, AccountType accountType) {
+    public Account(String userID, String name, AccountType accountType, double initialBalance) {
         this.accountID = UUID.randomUUID().toString();
         this.userID = userID;
         this.name = name;
-        this.balance = 0;
+        this.balance = initialBalance;
         this.transactions = new ArrayList<>();
         this.accountType = accountType;
     }
