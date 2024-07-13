@@ -110,11 +110,11 @@ public class AccountDetailView extends BorderPane {
 
         Scene scene = new Scene(createTransactionView);
 
-        Stage stage = new Stage();
-        stage.setTitle("Create New Transaction");
-        stage.setScene(scene);
+        createTransactionStage = new Stage();
+        createTransactionStage.setTitle("Create New Transaction");
+        createTransactionStage.setScene(scene);
 
-        stage.show();
+        createTransactionStage.show();
     }
 
     private void addNewTransaction() {
