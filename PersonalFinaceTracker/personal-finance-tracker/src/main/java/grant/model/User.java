@@ -1,6 +1,8 @@
 package grant.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class User {
@@ -75,6 +77,10 @@ public class User {
         return firstName + " " + lastName;
     }
 
+    public String greetUser() {
+        return "Hello, " + getFullName() + "!";
+    }
+
     /** Gets the user's net worth by adding up all the balances in user's accounts */
     public double getNetWorth() {
         double netWorth = 0.0;
@@ -84,6 +90,25 @@ public class User {
         }
 
         return netWorth;
+    }
+
+    /** Gets a list of the user's transactions within the last week. */
+    public ArrayList<Transaction> getRecentTransactions() {
+        ArrayList<Transaction> recent = new ArrayList<>();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -7); // a week ago
+        Date dateThreshold = calendar.getTime();
+        
+        for(Account account : accounts) {
+            for (Transaction transaction : account.getTransactions()) {
+                if(transaction.getDate().after(dateThreshold)) {
+                    recent.add(transaction);
+                }
+            }
+        }
+
+        return recent;
     }
 
     public String getFormattedNetWorth() {

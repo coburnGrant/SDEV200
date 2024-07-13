@@ -1,17 +1,14 @@
 package grant.view;
 
-import grant.App;
-import grant.model.Account;
+import grant.UIHelpers;
 import grant.model.Transaction;
 import grant.model.User;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class DashboardView extends BorderPane {
@@ -22,58 +19,60 @@ public class DashboardView extends BorderPane {
         initializeUI();
     }
 
+    /** Initializes all UI elements in view */
     private void initializeUI() {
         setPadding(new Insets(20));
-        setBackground(new Background(new BackgroundFill(App.PRIMARY_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
+        setBackground(UIHelpers.PRIMARY_BACKGROUND);
 
         VBox dashboard = createDashboardContent();
+
         setCenter(dashboard);
     }
 
+    /** Creates the dashboard UI */
     private VBox createDashboardContent() {
         VBox dashboard = new VBox(20);
         dashboard.setPadding(new Insets(20));
-        dashboard.setAlignment(Pos.TOP_CENTER);
+        dashboard.setAlignment(Pos.TOP_LEFT);
 
-        Text title = App.titleText("Dashboard");
+        // Create title
+        Text title = UIHelpers.titleText("Dashboard");
         setTop(title);
 
-        // Display net worth
-        Text netWorthLabel = App.primaryText("Net Worth:", 20);
+        // Create greeting
+        Text helloText = UIHelpers.createText(user.greetUser(), FontWeight.NORMAL, 20);
+        dashboard.getChildren().add(helloText);
 
-        Text netWorthValue = App.primaryText(user.getFormattedNetWorth(), 16);
+        // Create net worth text
+        Text netWorthLabel = UIHelpers.primaryText("Net Worth:", 20);
+        Text netWorthValue = UIHelpers.primaryText(user.getFormattedNetWorth(), 16);
 
         HBox netWorthBox = new HBox(10);
         netWorthBox.setAlignment(Pos.CENTER_LEFT);
         netWorthBox.getChildren().addAll(netWorthLabel, netWorthValue);
         dashboard.getChildren().add(netWorthBox);
 
-        // Display recent transactions
+        // Create recent transactions list
         VBox transactionBox = new VBox(10);
         transactionBox.setAlignment(Pos.CENTER_LEFT);
 
-        Text transactionsTitle = App.subtitleText("Recent Transactions");
+        Text transactionsTitle = UIHelpers.subtitleText("Recent Transactions");
 
         transactionBox.getChildren().add(transactionsTitle);
 
-        // Populate with transactions
-        for (Account account : user.getAccounts()) {
-            for (Transaction transaction : account.getTransactions()) {
-                TransactionRowView row = new TransactionRowView(transaction);
+        for (Transaction transaction : user.getRecentTransactions()) {
+            TransactionRowView row = new TransactionRowView(transaction);
 
-                row.setRowClicked(e -> showTransaction(transaction));
-
-                transactionBox.getChildren().add(row);
-            }
+            transactionBox.getChildren().add(row);
         }
 
         dashboard.getChildren().add(transactionBox);
         
+        // Create accounts list 
         VBox accountsBox = new VBox(10);
-        accountsBox.setAlignment(Pos.CENTER_LEFT);
 
-        Text accountsTitle = App.subtitleText("Accounts");
-        
+        Text accountsTitle = UIHelpers.subtitleText("Accounts");
+
         VBox accountList = new AccountsListView(user.getAccounts()).getAccountList();
         accountList.setPadding(new Insets(0));
 
@@ -82,9 +81,5 @@ public class DashboardView extends BorderPane {
         dashboard.getChildren().add(accountsBox);
 
         return dashboard;
-    }
-
-    private void showTransaction(Transaction transaction) {
-        System.out.println("Showing transaction " + transaction.getDescription());
     }
 }

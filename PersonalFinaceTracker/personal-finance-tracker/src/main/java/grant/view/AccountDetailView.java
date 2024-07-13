@@ -1,6 +1,6 @@
 package grant.view;
 
-import grant.App;
+import grant.UIHelpers;
 import grant.model.Account;
 import grant.model.Transaction;
 import javafx.event.ActionEvent;
@@ -25,25 +25,29 @@ public class AccountDetailView extends BorderPane {
 
         VBox accountDetails = createAccountDetails();
 
-        setTop(createTopPane());
+        setTop(createHeader());
         setCenter(accountDetails);
     }
 
+    /** Creates main account detail view */
     private VBox createAccountDetails() {
         VBox accountDetails = new VBox(20);
         accountDetails.setPadding(new Insets(20));
 
-        Text subtitle = App.subtitleText("Balance:");
+        // Create balance text
+        Text subtitle = UIHelpers.subtitleText("Balance:");
 
         Text balanceText = new Text(account.getFormattedBalance());
         balanceText.setFill(account.getBalance() < 0 ? Color.RED : Color.WHITE);
         balanceText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         HBox balanceHBox = new HBox(10);
-        balanceHBox.getChildren().addAll(subtitle, balanceText);
         balanceHBox.setAlignment(Pos.BOTTOM_LEFT);
 
-        Text transactionSubtitleText = App.subtitleText("Transactions");
+        balanceHBox.getChildren().addAll(subtitle, balanceText);
+
+        // Create list of transactions
+        Text transactionSubtitleText = UIHelpers.subtitleText("Transactions");
 
         accountDetails.getChildren().addAll(balanceHBox, transactionSubtitleText);
 
@@ -55,14 +59,17 @@ public class AccountDetailView extends BorderPane {
         return accountDetails;
     }
 
-    private HBox createTopPane() {
+    /** Creates the account detail header with account name and back button. */
+    private HBox createHeader() {
         HBox topPane = new HBox(10);
         topPane.setAlignment(Pos.CENTER_LEFT);
         topPane.setPadding(new Insets(10));
 
-        Text accountTitle = App.titleText(account.getName());
+        // Create title
+        Text accountTitle = UIHelpers.titleText(account.getName());
 
-        Button backButton = App.createSimpleButton("←");
+        // Create back button
+        Button backButton = UIHelpers.createSimpleButton("←");
         backButton.setOnAction(e -> backButtonHandler.handle(e));
 
         topPane.getChildren().addAll(backButton, accountTitle);

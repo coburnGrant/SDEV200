@@ -1,6 +1,6 @@
 package grant.view;
 
-import grant.App;
+import grant.UIHelpers;
 import grant.model.Account;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,18 +27,19 @@ public class AccountRowView extends HBox {
         setupUI();
     }
 
+    /** Creates row view */
     private void setupUI() {
         setPrefHeight(50);
         setPadding(new Insets(15));
-        setBackground(new Background(new BackgroundFill(App.SECONDARY_COLOR, new CornerRadii(10), null)));
+        setBackground(new Background(new BackgroundFill(UIHelpers.SECONDARY_COLOR, new CornerRadii(10), null)));
         setAlignment(Pos.CENTER_LEFT);
         setCursor(Cursor.HAND);
 
         VBox vBox = new VBox(10);
 
-        Text accountName = App.headingText(account.getName());
+        Text accountName = UIHelpers.headingText(account.getName());
 
-        Text subtitle = App.primaryText("Balance:", 16);
+        Text subtitle = UIHelpers.primaryText("Balance:", 16);
         subtitle.setFill(Color.GRAY);
 
         Text balanceText = new Text(account.getFormattedBalance());
@@ -56,7 +57,8 @@ public class AccountRowView extends HBox {
         setOnMouseClicked(e -> rowPressEventHandler.handle(e));
     }
 
-    public void setOnClickEvent(EventHandler<MouseEvent> handler) {
+    /** Sets event handler for when the account row is clicked. */
+    public void setOnRowClicked(EventHandler<MouseEvent> handler) {
         this.rowPressEventHandler = handler;
     }
 }
