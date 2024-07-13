@@ -57,7 +57,7 @@ public class AccountDetailView extends BorderPane {
         balanceText.setFill(account.getBalance() < 0 ? Color.RED : Color.WHITE);
         balanceText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
-        HBox balanceHBox = new HBox(10);
+        HBox balanceHBox = new HBox(5);
         balanceHBox.setAlignment(Pos.BOTTOM_LEFT);
 
         balanceHBox.getChildren().addAll(subtitle, balanceText);
@@ -72,7 +72,7 @@ public class AccountDetailView extends BorderPane {
         if(account.getAccountType() == AccountType.SAVINGS) {
             SavingsAccount savingsAccount = (SavingsAccount) account;
 
-            HBox interestRateBox = new HBox(10);
+            HBox interestRateBox = new HBox(5);
             interestRateBox.setAlignment(Pos.BASELINE_LEFT);
 
             Text interestRateLabel = UIHelpers.subtitleText("Interest Rate:");
