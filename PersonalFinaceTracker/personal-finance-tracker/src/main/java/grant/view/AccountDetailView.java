@@ -67,7 +67,7 @@ public class AccountDetailView extends BorderPane {
 
         accountDetails.getChildren().addAll(balanceHBox, transactionSubtitleText, newTransactionButton);
 
-        for (Transaction transaction : account.getTransactions()) {
+        for (Transaction transaction : account.getSortedTransactions()) {
             TransactionRowView row = new TransactionRowView(transaction, e -> deleteTransaction(transaction), e -> showEditTransaction(transaction));
             accountDetails.getChildren().add(row);
         }

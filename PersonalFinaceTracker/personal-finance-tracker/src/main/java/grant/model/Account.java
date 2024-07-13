@@ -1,6 +1,8 @@
 package grant.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.UUID;
 
 public abstract class Account {
@@ -60,6 +62,22 @@ public abstract class Account {
     /** Getter for account's list of transactions */
     public ArrayList<Transaction> getTransactions() {
         return transactions;
+    }
+
+    /** Gets transactions sorted by date newest to oldest */
+    public ArrayList<Transaction> getSortedTransactions() {
+        // Create a copy of the original list
+        ArrayList<Transaction> sortedTransactions = new ArrayList<>(transactions);
+        
+        Collections.sort(sortedTransactions, new Comparator<Transaction>() {
+            @Override
+            public int compare(Transaction t1, Transaction t2) {
+                // Sort by date in descending order (newest to oldest)
+                return t2.getDate().compareTo(t1.getDate());
+            }
+        });
+
+        return sortedTransactions;
     }
 
     /**

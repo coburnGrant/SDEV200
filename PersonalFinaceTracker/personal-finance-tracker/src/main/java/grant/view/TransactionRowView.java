@@ -36,7 +36,7 @@ public class TransactionRowView extends HBox {
         this.handleTransactionDeletion = handleTransactionDeletion;
         this.handleTransactionEdit = handleTransactionEdit;
 
-        this.dateFormat = new SimpleDateFormat("E MMM dd");
+        this.dateFormat = new SimpleDateFormat("E MMM dd y");
 
         setupUI();
 
