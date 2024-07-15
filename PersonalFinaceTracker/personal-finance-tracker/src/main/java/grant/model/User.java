@@ -9,6 +9,10 @@ public class User {
     /** User's id */
     private final String userID;
 
+    private final String username;
+
+    private final String password;
+
     /** User's first name */
     private String firstName;
 
@@ -22,8 +26,10 @@ public class User {
     private ArrayList<UserObserver> observers;
 
     /** Constructor for a user */
-    public User(String firstName, String lastName) {
+    public User(String username, String password, String firstName, String lastName) {
         this.userID = UUID.randomUUID().toString();
+        this.username = username;
+        this.password = password;        
         this.firstName = firstName;
         this.lastName = lastName;
         this.accounts = new ArrayList<>();

@@ -9,6 +9,7 @@ import grant.model.TransactionType;
 import grant.model.User;
 import grant.view.AccountsListView;
 import grant.view.DashboardView;
+import grant.view.LoginView;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,7 +24,7 @@ import javafx.stage.Stage;
 
 public class App extends Application {
     private Stage primaryStage;
-    private static Scene scene;
+    private static Scene primaryScene;
     private BorderPane rootLayout;
 
     private User testUser;
@@ -32,16 +33,23 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Personal Finance Tracker");
 
-        initTestUser();
-        initRootLayout();
-        showDashboard();
+        boolean isLoggedIn = false;
 
-        scene = new Scene(rootLayout, 800, 600);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        if(isLoggedIn) {
+            this.primaryStage = primaryStage;
+            this.primaryStage.setTitle("Personal Finance Tracker");
+            initTestUser();
+            initRootLayout();
+    
+            showDashboard();
+    
+            primaryScene = new Scene(rootLayout, 800, 600);
+            primaryStage.setScene(primaryScene);
+            primaryStage.show();
+        } else { 
+            showLoginView();
+        }
     }
 
     /** Initializes the root layout */
@@ -49,7 +57,7 @@ public class App extends Application {
         rootLayout = new BorderPane();
 
         // Set background color
-        rootLayout.setBackground(new Background(new BackgroundFill(UIHelpers.PRIMARY_COLOR, null, null)));
+        rootLayout.setBackground(UIHelpers.PRIMARY_BACKGROUND);
 
         // Create navbar
         createNavbar();
@@ -100,9 +108,22 @@ public class App extends Application {
         rootLayout.setCenter(scrollPane);
     }
 
+    private void showLoginView() {
+
+        LoginView loginView = new LoginView();
+
+
+        Scene loginScene = new Scene(loginView);
+
+        Stage loginStage = new Stage();
+        loginStage.setTitle("Login to Personal Finance Tracker");
+        loginStage.setScene(loginScene);
+        loginStage.show();
+    }
+
     /** Creates a test user for UI testing purposes */
     private void initTestUser() {
-        testUser = new User("Grant", "Coburn");
+        testUser = new User("username", "password", "Grant", "Coburn");
     
         CheckingAccount checkingAccount = new CheckingAccount(testUser.getUserID(), "My Checking Account", 1000);
         SavingsAccount savingsAccount = new SavingsAccount(testUser.getUserID(), "My Savings Account", 4.5, 1000);
