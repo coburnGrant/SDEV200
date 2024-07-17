@@ -10,18 +10,13 @@
   <packaging>war</packaging>
 
   <name>Loan Calculator Maven Webapp</name>
-  <url>http://www.brandondonnelson.com</url>
+  <url>localhost:8080/loan-calculator</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
-
-  <!--
-    1. mvn install # Download the dependencies
-    2. mvn compile war:exploded  # This will build and output the web app into the target directory. /target/server
-  -->
 
   <dependencies>
     <dependency>

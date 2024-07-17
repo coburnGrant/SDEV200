@@ -3,23 +3,16 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-  <display-name>My App</display-name>
-
-  <servlet>
-    <servlet-name>Servlet</servlet-name>
-    <servlet-class>com.grant.Servlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Servlet</servlet-name>
-    <url-pattern>/api</url-pattern>
-  </servlet-mapping>
-
+  <display-name>Loan Calculator</display-name>
+  
   <servlet>
     <servlet-name>LoanCalculator</servlet-name>
     <servlet-class>com.grant.LoanCalculator</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>LoanCalculator</servlet-name>
     <url-pattern>/calculate-loan</url-pattern>
   </servlet-mapping>
+
 </web-app>
