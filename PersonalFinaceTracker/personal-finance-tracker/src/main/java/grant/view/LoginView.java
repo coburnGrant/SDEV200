@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 public class LoginView extends BorderPane {
     // Fields for the login view
@@ -45,46 +46,97 @@ public class LoginView extends BorderPane {
         loginVBox.setAlignment(Pos.CENTER);
 
         loginUsernameField = new LabeledTextField("Username");
-        loginPasswordField = new PasswordField(); //LabeledTextField("Password");
+        loginUsernameField.setAlignment(Pos.CENTER);
 
+        // Password text box
+        HBox passwordHBox = new HBox(5);
+        Text passwordFieldLabel = UIHelpers.primaryText("Password");
+        loginPasswordField = new PasswordField();
+        passwordHBox.getChildren().addAll(passwordFieldLabel, loginPasswordField);
+        passwordHBox.setAlignment(Pos.CENTER);
+
+        // Login button
         loginButton = UIHelpers.createSimpleButton("Login");
+        loginButton.setMinWidth(250);
         loginButton.setOnAction(e -> loginRequested());
 
+        HBox loginButtonHBox = new HBox();
+        loginButtonHBox.getChildren().add(loginButton);
+        loginButtonHBox.setAlignment(Pos.CENTER);
+
+        // "No account? Create account" Button
         HBox noAccountHBox = new HBox(5);
         noAccountHBox.setAlignment(Pos.CENTER);
 
         Text noAccountText = UIHelpers.primaryText("Don't have an account?");
-        
         noAccountButton = UIHelpers.createSimpleButton("Create new account");
         noAccountButton.setOnAction(e -> displayCreateNewAccount());
 
         noAccountHBox.getChildren().addAll(noAccountText, noAccountButton);
 
-        loginVBox.getChildren().addAll(loginUsernameField, loginPasswordField, loginButton, noAccountHBox);
+        // Set background color
+        VBox backgroundVBox = new VBox(10);
+        backgroundVBox.setPadding(new Insets(30));
+        backgroundVBox.setBackground(UIHelpers.SECONDARY_BACKGROUND);
+        backgroundVBox.getChildren().addAll(loginUsernameField, passwordHBox, loginButtonHBox, noAccountHBox);
+
+        // Welcome text
+        Text welcomeText = UIHelpers.titleText("Login");
+        welcomeText.setTextAlignment(TextAlignment.CENTER);
+        loginVBox.getChildren().addAll(welcomeText, backgroundVBox);
 
         // Initialize create new account view
         createNewAccountVBox = new VBox(10);
         createNewAccountVBox.setAlignment(Pos.CENTER);
 
+        // First name field
         firstNameField = new LabeledTextField("First name");
-        lastNameField = new LabeledTextField("Last name");
-        createUsernameField = new LabeledTextField("Username");
-        createPasswordField = new LabeledTextField("Password");
+        firstNameField.setAlignment(Pos.CENTER);
 
+        // Last name field
+        lastNameField = new LabeledTextField("Last name");
+        lastNameField.setAlignment(Pos.CENTER);
+
+        // Username field
+        createUsernameField = new LabeledTextField("Username");
+        createUsernameField.setAlignment(Pos.CENTER);
+        
+        // Password field
+        createPasswordField = new LabeledTextField("Password");
+        createPasswordField.setAlignment(Pos.CENTER);
+
+        // "Have an account? Login" button
         HBox haveAnAccountHBox = new HBox(10);
         haveAnAccountHBox.setAlignment(Pos.CENTER);
-        
+
         Text haveAnAccountText = UIHelpers.primaryText("Have an account?");
 
         haveAnAccountButton = UIHelpers.createSimpleButton("Login");
         haveAnAccountButton.setOnAction(e -> displayLogin());
 
+        // Create account button
         createAccountButton = UIHelpers.createSimpleButton("Create new Account");
         createAccountButton.setOnAction(e -> createAccountRequested());
+        createAccountButton.setMinWidth(250);
+        createAccountButton.setAlignment(Pos.CENTER);
+
+        HBox createAccountButtonHBox = new HBox();
+        createAccountButtonHBox.getChildren().add(createAccountButton);
+        createAccountButtonHBox.setAlignment(Pos.CENTER);
 
         haveAnAccountHBox.getChildren().addAll(haveAnAccountText, haveAnAccountButton);
 
-        createNewAccountVBox.getChildren().addAll(firstNameField, lastNameField, createUsernameField, createPasswordField, haveAnAccountHBox, createAccountButton);
+        // Title
+        Text createAccountText = UIHelpers.titleText("Create Account");
+        createAccountText.setTextAlignment(TextAlignment.CENTER);
+
+        // Background
+        VBox createBackgroundVBox = new VBox(10);
+        createBackgroundVBox.setBackground(UIHelpers.SECONDARY_BACKGROUND);
+        createBackgroundVBox.setPadding(new Insets(30));
+        createBackgroundVBox.getChildren().addAll(firstNameField, lastNameField, createUsernameField, createPasswordField, createAccountButtonHBox, haveAnAccountHBox);
+
+        createNewAccountVBox.getChildren().addAll(createAccountText, createBackgroundVBox);
     }
 
     private void displayLogin() {

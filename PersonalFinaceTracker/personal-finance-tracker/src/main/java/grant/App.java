@@ -109,9 +109,7 @@ public class App extends Application {
     }
 
     private void showLoginView() {
-
         LoginView loginView = new LoginView();
-
 
         Scene loginScene = new Scene(loginView);
 

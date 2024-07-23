@@ -24,6 +24,7 @@ public class UIHelpers {
 
     // Backgrounds
     public static final Background PRIMARY_BACKGROUND = new Background(new BackgroundFill(UIHelpers.PRIMARY_COLOR, CornerRadii.EMPTY, Insets.EMPTY));
+    public static final Background SECONDARY_BACKGROUND = new Background(new BackgroundFill(UIHelpers.SECONDARY_COLOR, CornerRadii.EMPTY, Insets.EMPTY));
 
     // Static text properties
     public static final Color PRIMARY_TEXT_COLOR = Color.WHITE;
