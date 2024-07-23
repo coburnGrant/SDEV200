@@ -22,7 +22,7 @@ public class LoginView extends BorderPane {
 
     // Fields for the create new account view
     private LabeledTextField createUsernameField;
-    private LabeledTextField createPasswordField;
+    private PasswordField createPasswordField;
     private LabeledTextField firstNameField;
     private LabeledTextField lastNameField;
 
@@ -32,7 +32,13 @@ public class LoginView extends BorderPane {
     private VBox loginVBox;
     private VBox createNewAccountVBox;
 
-    public LoginView() { 
+    private LoginCallback loginCallback;
+    private CreateAccountCallback createAccountCallback;
+
+    public LoginView(LoginCallback onLogin, CreateAccountCallback onCreateAccount) { 
+        this.loginCallback = onLogin;
+        this.createAccountCallback = onCreateAccount;
+
         initializeUI();
         displayLogin();
     }
@@ -102,8 +108,12 @@ public class LoginView extends BorderPane {
         createUsernameField.setAlignment(Pos.CENTER);
         
         // Password field
-        createPasswordField = new LabeledTextField("Password");
-        createPasswordField.setAlignment(Pos.CENTER);
+        createPasswordField = new PasswordField();
+        Text passwordText = UIHelpers.primaryText("Password");
+
+        HBox createPasswordHBox = new HBox(10);
+        createPasswordHBox.setAlignment(Pos.CENTER);
+        createPasswordHBox.getChildren().addAll(passwordText, createPasswordField);
 
         // "Have an account? Login" button
         HBox haveAnAccountHBox = new HBox(10);
@@ -134,7 +144,7 @@ public class LoginView extends BorderPane {
         VBox createBackgroundVBox = new VBox(10);
         createBackgroundVBox.setBackground(UIHelpers.SECONDARY_BACKGROUND);
         createBackgroundVBox.setPadding(new Insets(30));
-        createBackgroundVBox.getChildren().addAll(firstNameField, lastNameField, createUsernameField, createPasswordField, createAccountButtonHBox, haveAnAccountHBox);
+        createBackgroundVBox.getChildren().addAll(firstNameField, lastNameField, createUsernameField, createPasswordHBox, createAccountButtonHBox, haveAnAccountHBox);
 
         createNewAccountVBox.getChildren().addAll(createAccountText, createBackgroundVBox);
     }
@@ -153,7 +163,7 @@ public class LoginView extends BorderPane {
         String uname = loginUsernameField.getText();
         String pw = loginPasswordField.getText();   
         
-        // TODO login user
+        loginCallback.onLogin(uname, pw);
     }
 
     private void createAccountRequested() {
@@ -161,7 +171,7 @@ public class LoginView extends BorderPane {
 
         User newUser = getNewUser();
 
-        // TODO add new user 
+        createAccountCallback.onCreateNewAccount(newUser);
     }
 
     private User getNewUser() {
@@ -172,5 +182,12 @@ public class LoginView extends BorderPane {
         String pw = createPasswordField.getText();
 
         return new User(uname, pw, fname, lname);
+    }
+    public interface LoginCallback {
+        void onLogin(String username, String password);
+    }
+
+    public interface CreateAccountCallback {
+        void onCreateNewAccount(User user);
     }
 }

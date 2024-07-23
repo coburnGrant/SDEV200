@@ -158,6 +158,8 @@ public class User {
         StringBuilder sb = new StringBuilder();
         sb.append("User {\n");
         sb.append("   User ID='").append(userID).append("'\n");
+        sb.append("   Username='").append(username).append("'\n");
+        sb.append("   Password='").append(password).append("'\n");
         sb.append("   First Name='").append(firstName).append("'\n");
         sb.append("   Last Name='").append(lastName).append("'\n");
         sb.append("   Full Name='").append(getFullName()).append("'\n");

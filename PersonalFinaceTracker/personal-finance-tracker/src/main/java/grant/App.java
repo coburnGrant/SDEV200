@@ -36,18 +36,18 @@ public class App extends Application {
 
         boolean isLoggedIn = false;
 
-        if(isLoggedIn) {
+        if (isLoggedIn) {
             this.primaryStage = primaryStage;
             this.primaryStage.setTitle("Personal Finance Tracker");
             initTestUser();
             initRootLayout();
-    
+
             showDashboard();
-    
+
             primaryScene = new Scene(rootLayout, 800, 600);
             primaryStage.setScene(primaryScene);
             primaryStage.show();
-        } else { 
+        } else {
             showLoginView();
         }
     }
@@ -88,10 +88,10 @@ public class App extends Application {
     private void showDashboard() {
         DashboardView dashboard = new DashboardView(testUser);
         ScrollPane scrollPane = new ScrollPane();
-    
+
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
-        
+
         scrollPane.setContent(dashboard);
         rootLayout.setCenter(scrollPane);
     }
@@ -100,16 +100,23 @@ public class App extends Application {
     private void showAccounts() {
         AccountsListView accountsView = new AccountsListView(testUser);
         ScrollPane scrollPane = new ScrollPane();
-    
+
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
-        
+
         scrollPane.setContent(accountsView);
         rootLayout.setCenter(scrollPane);
     }
 
+    /** Displays login/create account view */
     private void showLoginView() {
-        LoginView loginView = new LoginView();
+        LoginView loginView = new LoginView(
+                (username, password) -> {
+                    System.out.println("logging in user " + username + " " + " with password: " + password);
+                },
+                (user) -> {
+                    System.out.println("creating new user " + user);
+                });
 
         Scene loginScene = new Scene(loginView);
 
@@ -122,10 +129,10 @@ public class App extends Application {
     /** Creates a test user for UI testing purposes */
     private void initTestUser() {
         testUser = new User("username", "password", "Grant", "Coburn");
-    
+
         CheckingAccount checkingAccount = new CheckingAccount(testUser.getUserID(), "My Checking Account", 1000);
         SavingsAccount savingsAccount = new SavingsAccount(testUser.getUserID(), "My Savings Account", 4.5, 1000);
-    
+
         // Adding transactions to Checking Account
         checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "McDonalds", 10.99, new Date(), TransactionType.WITHDRAWAL));
         checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "Gas Station", 30.50, new Date(), TransactionType.WITHDRAWAL));
