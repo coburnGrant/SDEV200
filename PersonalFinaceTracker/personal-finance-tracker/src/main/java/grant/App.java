@@ -1,7 +1,6 @@
 package grant;
 
 import java.util.Date;
-
 import grant.model.CheckingAccount;
 import grant.model.SavingsAccount;
 import grant.model.Transaction;
