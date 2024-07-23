@@ -4,9 +4,9 @@ import stringsCollections.StoreStrings;
 public class TestStoreStrings {
 
 	public static void main(String[] args) {
-		ArrayList<> states = new ArrayList<Integer>();
+		ArrayList<String> states = new ArrayList<>();
 		states.add("Virginia");
-		states.add("New York")
+		states.add("New York");
 		states.add("Michigan");
 		states.add("Indiana");
 		states.add("Missouri");
@@ -14,8 +14,8 @@ public class TestStoreStrings {
 		
 		states.sort(null);
 		
-		for(String state:states) {
-			System.out.println(state)
+		for (String state : states) {
+			System.out.println(state);
 		}
 		
 		if (StoreStrings.duplicateString(states)) {
@@ -23,8 +23,5 @@ public class TestStoreStrings {
 		} else {
 			System.out.println(StoreStrings.count(states));
 		}
-		
-		
 	}
-
 }
