@@ -31,25 +31,32 @@ public class App extends Application {
 
     private HBox navBar;
 
+    private Stage loginStage;
+
     @Override
     public void start(Stage primaryStage) {
 
         boolean isLoggedIn = false;
 
+        this.primaryStage = primaryStage;
+        this.primaryStage.setTitle("Personal Finance Tracker");
+
         if (isLoggedIn) {
-            this.primaryStage = primaryStage;
-            this.primaryStage.setTitle("Personal Finance Tracker");
-            initTestUser();
-            initRootLayout();
-
-            showDashboard();
-
-            primaryScene = new Scene(rootLayout, 800, 600);
-            primaryStage.setScene(primaryScene);
-            primaryStage.show();
+            showPrimaryStage();
         } else {
             showLoginView();
         }
+    }
+
+    private void showPrimaryStage() {
+        initTestUser();
+        initRootLayout();
+
+        showDashboard();
+
+        primaryScene = new Scene(rootLayout, 800, 600);
+        primaryStage.setScene(primaryScene);
+        primaryStage.show();
     }
 
     /** Initializes the root layout */
@@ -113,14 +120,20 @@ public class App extends Application {
         LoginView loginView = new LoginView(
                 (username, password) -> {
                     System.out.println("logging in user " + username + " " + " with password: " + password);
+                    // assume successful login
+                    loginStage.close();
+                    showPrimaryStage();
                 },
                 (user) -> {
                     System.out.println("creating new user " + user);
+                    // assume successful login
+                    loginStage.close();
+                    showPrimaryStage();
                 });
 
         Scene loginScene = new Scene(loginView);
 
-        Stage loginStage = new Stage();
+        loginStage = new Stage();
         loginStage.setTitle("Login to Personal Finance Tracker");
         loginStage.setScene(loginScene);
         loginStage.show();
