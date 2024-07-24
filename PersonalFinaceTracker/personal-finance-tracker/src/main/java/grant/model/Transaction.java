@@ -23,15 +23,25 @@ public class Transaction {
     /** Type of transaction */
     private TransactionType type;
 
-    /** Constructor for Transaction */
+    /** Constructor for a new Transaction */
     public Transaction(String accountID, String description, double amount, Date date, TransactionType type) {
-        this.transactionID = UUID.randomUUID().toString();
+        this(UUID.randomUUID().toString(), accountID, description, amount, date, type);
+    }
+
+    /** Constructor for an existing Transaction */
+    public Transaction(String transactionID, String accountID, String description, double amount, Date date, TransactionType type) {
+        this.transactionID = transactionID;
         this.accountID = accountID;
 
         this.description = description;
         this.amount = amount;
         this.date = date;
         this.type = type;
+    }
+    
+    /** Getter for accountID */
+    public String getAccountID() {
+        return accountID;
     }
 
     /** Getter for transactionID */

@@ -109,7 +109,7 @@ public class AccountsListView extends BorderPane implements UserObserver {
 
         System.out.println("Creating new account: \n" + newAccount);
 
-        user.addAccount(newAccount);
+        user.addAccount(newAccount, true);
     }
 
     @Override

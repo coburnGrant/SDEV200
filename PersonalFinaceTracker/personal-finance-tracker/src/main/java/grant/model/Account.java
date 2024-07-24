@@ -15,6 +15,9 @@ public abstract class Account {
     /** Name of the account */
     private String name;
 
+    /** The account's initial balance */
+    private final double initialBalance;
+
     /** The account's current balance */
     private double balance;
 
@@ -24,14 +27,28 @@ public abstract class Account {
     /** Type of account this is */
     private final AccountType accountType;
 
-    /** Constructor for Account */
-    public Account(String userID, String name, AccountType accountType, double initialBalance) {
-        this.accountID = UUID.randomUUID().toString();
+    private final AccountCacher cacher;
+
+    /** Constructor for New Account */
+    public Account(String userID, String name, AccountType accountType, double initialBalance, AccountCacher cacher) {
+        this(UUID.randomUUID().toString(), userID, name, accountType, initialBalance, cacher);
+    }
+
+    /** Constructor for Existing Account */
+    public Account(String accountID, String userID, String name, AccountType accountType, double initialBalance, AccountCacher cacher) {
+        this.accountID = accountID;
         this.userID = userID;
         this.name = name;
+        this.initialBalance = initialBalance;
         this.balance = initialBalance;
         this.transactions = new ArrayList<>();
         this.accountType = accountType;
+        this.cacher = cacher;
+    }
+
+    /** Getter for userID */
+    public String getUserID() {
+        return userID;
     }
 
     /** Getter for accountID */
@@ -47,6 +64,11 @@ public abstract class Account {
     /** Setter for account name */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /** Getter for initial account balance */
+    public double getInitialBalance() {
+        return initialBalance;
     }
 
     /** Getter for account balance */
@@ -84,13 +106,24 @@ public abstract class Account {
      * Adds an transaction to the account 
      * @return boolean indicating if the transaction was successfully added
      */
-    public boolean addTransaction(Transaction transaction) {
+    public boolean addTransaction(Transaction transaction, boolean cache) {
         // Add to list of transactions
         boolean result = transactions.add(transaction);
 
         if(result) {
             // Update account balance
             balance += transaction.signedAmount();
+
+            if(cache) {
+                // Cache transaction
+                boolean cached = cacher.createTransaction(transaction);
+
+                if(cached) {
+                    System.out.println("Successfully cached new transaction to database");
+                } else {
+                    System.out.println("Failed to cache new transaction to database");
+                }
+            }
         }
 
         return result;
@@ -100,13 +133,24 @@ public abstract class Account {
      * Removes a transaction from the account
      * @return boolean indicating if the transaction was successfully removed
      */
-    public boolean removeTransaction(Transaction transaction) {
+    public boolean removeTransaction(Transaction transaction, boolean cache) {
         // Remove from list of transactions
         boolean result = transactions.remove(transaction);
 
         if(result) {
             // Update account balance
             balance -= transaction.signedAmount();
+            
+            if(cache) {
+                // Cache removal of transaction
+                boolean cached = cacher.deleteTransaction(transaction);
+
+                if(cached) {
+                    System.out.println("Successfully cached removed transaction to database");
+                } else {
+                    System.out.println("Failed to cache removed transaction to database");
+                }
+            }
         }
         
         return result;
@@ -114,8 +158,8 @@ public abstract class Account {
 
     /** Edits a transaction */
     public void editTransaction(Transaction oldTransaction, Transaction newTransaction) {
-        removeTransaction(oldTransaction);
-        addTransaction(newTransaction);
+        removeTransaction(oldTransaction, true);
+        addTransaction(newTransaction, true);
     }
 
     /** Getter for account type */
@@ -142,5 +186,10 @@ public abstract class Account {
         sb.append("}");
     
         return sb.toString();
+    }
+
+    public interface AccountCacher {
+        boolean createTransaction(Transaction transaction);
+        boolean deleteTransaction(Transaction transaction);
     }
 }

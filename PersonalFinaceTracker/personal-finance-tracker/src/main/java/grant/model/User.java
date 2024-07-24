@@ -25,20 +25,38 @@ public class User {
     /** List of observers for this user */
     private ArrayList<UserObserver> observers;
 
-    /** Constructor for a user */
-    public User(String username, String password, String firstName, String lastName) {
-        this.userID = UUID.randomUUID().toString();
+    private UserCacher cacher;
+
+    /** Constructor for a new user */
+    public User(String username, String password, String firstName, String lastName, UserCacher cacher) {
+        this(UUID.randomUUID().toString(), username, password, firstName, lastName, cacher);
+    }
+
+    /** Constructor for an existing user */
+    public User(String userID, String username, String password, String firstName, String lastName, UserCacher cacher) {
+        this.userID = userID;
         this.username = username;
         this.password = password;        
         this.firstName = firstName;
         this.lastName = lastName;
         this.accounts = new ArrayList<>();
         this.observers = new ArrayList<>();
+        this.cacher = cacher;
     }
 
     /** Getter for userID */
     public String getUserID() {
         return userID;
+    }
+
+    /** Getter for username */
+    public String getUsername() {
+        return username;
+    }
+
+    /** Getter for password */
+    public String getPassword() {
+        return password;
     }
 
     /** Getter for user firstName */
@@ -71,8 +89,19 @@ public class User {
      * 
      * @return a boolean indicating if the account was successfully added
      */
-    public boolean addAccount(Account account) {
+    public boolean addAccount(Account account, boolean cache) {
         boolean result = accounts.add(account);
+
+        if(result && cache) {
+            boolean cached = cacher.createAccount(account);
+
+            if(cached) {
+                System.out.println("Successfully cached new account to database");
+            } else {
+                System.out.println("Failed to cache new account to database");
+            }
+        }
+
         notifyObservers();
         return result;
     }
@@ -83,6 +112,7 @@ public class User {
      * @return a boolean indicating if the account was successfully removed
      */
     public boolean removeAccount(Account account) {
+        //TODO - cache removal
         boolean result = accounts.remove(account);
         notifyObservers();
         return result;
@@ -182,5 +212,17 @@ public class User {
 
         sb.append("}");
         return sb.toString();
+    }
+
+    public UserCacher getCacher() {
+        return cacher;
+    }
+
+    public void setCacher(UserCacher cacher) {
+        this.cacher = cacher;
+    }
+
+    public interface UserCacher extends Account.AccountCacher {
+        boolean createAccount(Account account);
     }
 }

@@ -1,11 +1,14 @@
 package grant;
 
+import java.sql.SQLException;
 import java.util.Date;
+
 import grant.model.CheckingAccount;
 import grant.model.SavingsAccount;
 import grant.model.Transaction;
 import grant.model.TransactionType;
 import grant.model.User;
+import grant.util.DatabaseUtil;
 import grant.view.AccountsListView;
 import grant.view.DashboardView;
 import grant.view.LoginView;
@@ -26,6 +29,9 @@ public class App extends Application {
     private static Scene primaryScene;
     private BorderPane rootLayout;
 
+    private DatabaseUtil dbUtil;
+
+    private User user;
     private User testUser;
 
     private HBox navBar;
@@ -34,6 +40,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        dbUtil = new DatabaseUtil();
 
         boolean isLoggedIn = false;
 
@@ -92,7 +99,7 @@ public class App extends Application {
 
     /** Displays the dashboard */
     private void showDashboard() {
-        DashboardView dashboard = new DashboardView(testUser);
+        DashboardView dashboard = new DashboardView(user);
         ScrollPane scrollPane = new ScrollPane();
 
         scrollPane.setFitToWidth(true);
@@ -104,7 +111,7 @@ public class App extends Application {
 
     /** Displays account list view */
     private void showAccounts() {
-        AccountsListView accountsView = new AccountsListView(testUser);
+        AccountsListView accountsView = new AccountsListView(user);
         ScrollPane scrollPane = new ScrollPane();
 
         scrollPane.setFitToWidth(true);
@@ -118,16 +125,10 @@ public class App extends Application {
     private void showLoginView() {
         LoginView loginView = new LoginView(
                 (username, password) -> {
-                    System.out.println("logging in user " + username + " " + " with password: " + password);
-                    // assume successful login
-                    loginStage.close();
-                    showPrimaryStage();
+                    loginUser(username, password);
                 },
-                (user) -> {
-                    System.out.println("creating new user " + user);
-                    // assume successful login
-                    loginStage.close();
-                    showPrimaryStage();
+                (newUser) -> {
+                    createNewUser(newUser);
                 });
 
         Scene loginScene = new Scene(loginView);
@@ -138,28 +139,62 @@ public class App extends Application {
         loginStage.show();
     }
 
+    private void loginUser(String username, String password) {
+        System.out.println("logging in user " + username + " with password: " + password);
+
+        try {
+            User existingUser = dbUtil.loadUser(username, password);
+
+            this.user = existingUser;
+            loginStage.close();
+            showPrimaryStage();
+
+        } catch (SQLException e) {
+            System.out.println("Error loading user!!");
+            e.printStackTrace();
+            // TODO: Possibly make custom exeption to display a detailed alert as to why user could not be logged in
+        }
+    }
+
+    private void createNewUser(User newUser) {
+        System.out.println("creating new user/n" + newUser);
+
+        boolean userCreated = dbUtil.createUser(newUser);
+
+        if(userCreated) {
+            // Update the cacher
+            newUser.setCacher(dbUtil);
+
+            this.user = newUser;
+            loginStage.close();
+            showPrimaryStage();
+        } else {
+            // TODO: Possibly make custom exeption to display a detailed alert as to why user could not be logged in
+        }
+    }
+
     /** Creates a test user for UI testing purposes */
     private void initTestUser() {
-        testUser = new User("username", "password", "Grant", "Coburn");
+        testUser = new User("username", "password", "Grant", "Coburn", null);
 
-        CheckingAccount checkingAccount = new CheckingAccount(testUser.getUserID(), "My Checking Account", 1000);
-        SavingsAccount savingsAccount = new SavingsAccount(testUser.getUserID(), "My Savings Account", 4.5, 1000);
+        CheckingAccount checkingAccount = new CheckingAccount(testUser.getUserID(), "My Checking Account", 1000, null);
+        SavingsAccount savingsAccount = new SavingsAccount(testUser.getUserID(), "My Savings Account", 4.5, 1000, null);
 
         // Adding transactions to Checking Account
-        checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "McDonalds", 10.99, new Date(), TransactionType.WITHDRAWAL));
-        checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "Gas Station", 30.50, new Date(), TransactionType.WITHDRAWAL));
-        checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "ATM Withdrawal", 100.00, new Date(), TransactionType.WITHDRAWAL));
-        checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "Transfer to Savings", 200.00, new Date(), TransactionType.WITHDRAWAL));
+        checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "McDonalds", 10.99, new Date(), TransactionType.WITHDRAWAL), false);
+        checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "Gas Station", 30.50, new Date(), TransactionType.WITHDRAWAL), false);
+        checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "ATM Withdrawal", 100.00, new Date(), TransactionType.WITHDRAWAL), false);
+        checkingAccount.addTransaction(new Transaction(checkingAccount.getAccountID(), "Transfer to Savings", 200.00, new Date(), TransactionType.WITHDRAWAL), false);
     
         // Adding transactions to Savings Account
-        savingsAccount.addTransaction(new Transaction(savingsAccount.getAccountID(), "Paycheck", 500, new Date(), TransactionType.DEPOSIT));
-        savingsAccount.addTransaction(new Transaction(savingsAccount.getAccountID(), "Interest", 20.25, new Date(), TransactionType.DEPOSIT));
-        savingsAccount.addTransaction(new Transaction(savingsAccount.getAccountID(), "Online Purchase", 150.75, new Date(), TransactionType.WITHDRAWAL));
-        savingsAccount.addTransaction(new Transaction(savingsAccount.getAccountID(), "Emergency Fund Deposit", 300, new Date(), TransactionType.DEPOSIT));
+        savingsAccount.addTransaction(new Transaction(savingsAccount.getAccountID(), "Paycheck", 500, new Date(), TransactionType.DEPOSIT), false);
+        savingsAccount.addTransaction(new Transaction(savingsAccount.getAccountID(), "Interest", 20.25, new Date(), TransactionType.DEPOSIT), false);
+        savingsAccount.addTransaction(new Transaction(savingsAccount.getAccountID(), "Online Purchase", 150.75, new Date(), TransactionType.WITHDRAWAL), false);
+        savingsAccount.addTransaction(new Transaction(savingsAccount.getAccountID(), "Emergency Fund Deposit", 300, new Date(), TransactionType.DEPOSIT), false);
     
         // Adding accounts to the user
-        testUser.addAccount(checkingAccount);
-        testUser.addAccount(savingsAccount);
+        testUser.addAccount(checkingAccount, false);
+        testUser.addAccount(savingsAccount, false);
     }
 
     public static void main(String[] args) {

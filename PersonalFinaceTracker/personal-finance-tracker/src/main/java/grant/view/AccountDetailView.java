@@ -144,7 +144,7 @@ public class AccountDetailView extends BorderPane {
 
         System.out.println("Adding new transaction! \n" + transaction);
 
-        boolean result = account.addTransaction(transaction);
+        boolean result = account.addTransaction(transaction, true);
 
         if (result) {
             closeCreateTransactionStage();
@@ -154,7 +154,7 @@ public class AccountDetailView extends BorderPane {
 
     /** Deletes a transaction from this account */
     private void deleteTransaction(Transaction transaction) {
-        boolean result = account.removeTransaction(transaction);
+        boolean result = account.removeTransaction(transaction, true);
 
         if(result) {
             refreshDetails();
