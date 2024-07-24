@@ -35,13 +35,20 @@ public class DatabaseUtil implements UserCacher {
         }
     }
 
+    /** Establishes connection to the database. */
     private Connection getConnection() throws SQLException {
         String url = getSqlUrl(HOST, PORT, DB_NAME);
-        
+
         return DriverManager.getConnection(url, USER, PASSWORD);
     }
 
     // MARK: Querying
+
+    /**
+     * Attempts to find a user with the given user name and password. If found,
+     * attempts to find all accounts associated with the user and all transactions
+     * associated with those accounts to add them to the user
+     */
     public User loadUser(String username, String password) throws LoginException {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
@@ -50,27 +57,27 @@ public class DatabaseUtil implements UserCacher {
 
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
-    
+
             ResultSet result = preparedStatement.executeQuery();
-    
-            if(result.next()) {
+
+            if (result.next()) {
                 String userID = result.getString("userID");
                 String fname = result.getString("firstName");
                 String lname = result.getString("lastName");
-    
+
                 User user = new User(userID, username, password, fname, lname, this);
-    
+
                 // Get all of user's accounts
                 ArrayList<Account> accounts = accountsForUser(userID);
-    
+
                 // Add user's accounts
-                for(Account account : accounts) {
+                for (Account account : accounts) {
                     user.addAccount(account, false);
                 }
-    
+
                 return user;
             } else {
-                throw new LoginException("User not found or incorrect password"); 
+                throw new LoginException("User not found or incorrect password");
             }
         } catch (SQLException e) {
             System.out.println("Error with loading user with username and password:");
@@ -80,6 +87,11 @@ public class DatabaseUtil implements UserCacher {
         }
     }
 
+    /**
+     * Attempts to get all the accounts associated with a userID and all of the
+     * transaction
+     * associated with those accounts.
+     */
     public ArrayList<Account> accountsForUser(String userID) throws SQLException {
         String query = "SELECT * FROM accounts WHERE userID = ?";
 
@@ -91,7 +103,7 @@ public class DatabaseUtil implements UserCacher {
 
         ArrayList<Account> accounts = new ArrayList<>();
 
-        while(result.next()) {
+        while (result.next()) {
             String accountID = result.getString("accountID");
             String name = result.getString("name");
             double balance = result.getDouble("balance");
@@ -99,7 +111,7 @@ public class DatabaseUtil implements UserCacher {
             double interestRate = result.getDouble("interestRate");
 
             Account account;
-            if(accountType.equals(AccountType.SAVINGS.getDescription())) {
+            if (accountType.equals(AccountType.SAVINGS.getDescription())) {
                 account = new SavingsAccount(accountID, userID, name, interestRate, balance, this);
             } else {
                 account = new CheckingAccount(accountID, userID, name, balance, this);
@@ -118,6 +130,7 @@ public class DatabaseUtil implements UserCacher {
         return accounts;
     }
 
+    /** Attempts to get all of the transactions associated with an account. */
     public ArrayList<Transaction> transactionsForAccount(String accountID) throws SQLException {
         String query = "SELECT * FROM transactions WHERE accountID = ?";
 
@@ -128,7 +141,7 @@ public class DatabaseUtil implements UserCacher {
 
         ArrayList<Transaction> transactions = new ArrayList<>();
 
-        while(result.next()) {
+        while (result.next()) {
             String transactionID = result.getString("transactionID");
             String description = result.getString("description");
             Double amount = result.getDouble("amount");
@@ -138,7 +151,7 @@ public class DatabaseUtil implements UserCacher {
             TransactionType transactionType = type.equals(TransactionType.WITHDRAWAL.getDescription()) ? TransactionType.WITHDRAWAL : TransactionType.DEPOSIT;
 
             Transaction transaction = new Transaction(transactionID, accountID, description, amount, date, transactionType);
-            
+
             transactions.add(transaction);
         }
 
@@ -146,6 +159,8 @@ public class DatabaseUtil implements UserCacher {
     }
 
     // MARK: Adding
+
+    /** Attempts to insert a new user into the database */
     public void createUser(User user) throws LoginException {
         String query = "INSERT INTO users (userID, username, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)";
 
@@ -170,6 +185,7 @@ public class DatabaseUtil implements UserCacher {
         }
     }
 
+    /** Attempts to insert a new account into the database */
     @Override
     public boolean createAccount(Account account) {
         String query = "INSERT INTO accounts (accountID, userID, name, balance, accountType, interestRate) VALUES (?, ?, ?, ?, ?, ?)";
@@ -196,27 +212,11 @@ public class DatabaseUtil implements UserCacher {
             System.out.println("Error creating account:");
             e.printStackTrace();
         }
-        
+
         return false;
     }
 
-    public class LoginException extends Exception {
-        // Default constructor
-        public LoginException() {
-            super();
-        }
-    
-        // Constructor that accepts a message
-        public LoginException(String message) {
-            super(message);
-        }
-
-        // Constructor that accepts a SQLException
-        public LoginException(SQLException sqlException) {
-            this("SQL Exception: " + sqlException.getMessage());
-        }
-    }
-
+    /** Attempts to insert a transaction into the database */
     public boolean createTransaction(Transaction transaction) {
         String query = "INSERT INTO transactions (transactionID, accountID, description, amount, date, type) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -237,11 +237,17 @@ public class DatabaseUtil implements UserCacher {
             System.out.println("Error creating account:");
             e.printStackTrace();
         }
-        
+
         return false;
     }
 
     // MARK: Deleting
+
+    /**
+     * r
+     * Attempts to delete a user and all of the user's associated accounts along
+     * with those accounts' associated transactions.
+     */
     @Override
     public boolean deleteUser(String userID) {
         try {
@@ -265,8 +271,9 @@ public class DatabaseUtil implements UserCacher {
             deleteUserStmt.setString(1, userID);
             int usersDeleted = deleteUserStmt.executeUpdate();
 
-            System.out.println("Transactions deleted: " + transactionsDeleted + "\nAccounts Deleted: " + accountsDeleted + "\nUsers deleted: " + usersDeleted);
-            
+            System.out.println("Transactions deleted: " + transactionsDeleted + "\nAccounts Deleted: " + accountsDeleted
+                    + "\nUsers deleted: " + usersDeleted);
+
             return transactionsDeleted > 0 || accountsDeleted > 0 || usersDeleted > 0;
         } catch (SQLException e) {
             System.out.println("Error deleting user");
@@ -276,6 +283,10 @@ public class DatabaseUtil implements UserCacher {
         return false;
     }
 
+    /**
+     * Attempts to delete an account, along with all of the accounts associated
+     * transactions from the database.
+     */
     @Override
     public boolean deleteAccount(String accountID) {
         try {
@@ -295,7 +306,7 @@ public class DatabaseUtil implements UserCacher {
             int accountsDeleted = deleteAccountStmt.executeUpdate();
 
             System.out.println("Transactions deleted: " + transactionsDeleted + "\nAccounts Deleted: " + accountsDeleted);
-            
+
             return transactionsDeleted > 0 || accountsDeleted > 0;
 
         } catch (SQLException e) {
@@ -303,9 +314,10 @@ public class DatabaseUtil implements UserCacher {
             e.printStackTrace();
         }
 
-        return false;    
+        return false;
     }
 
+    /** Attempts to delete a transaction from the database . */
     @Override
     public boolean deleteTransaction(String transactionID) {
         try {
@@ -328,9 +340,22 @@ public class DatabaseUtil implements UserCacher {
 
         return false;
     }
-    
+
     /** Helper function to format a SQL URL string */
     public static String getSqlUrl(String host, int port, String dbName) {
         return String.format("jdbc:mysql://%s:%d/%s", host, port, dbName);
+    }
+
+    /** A class for exeptions to be thrown while logging in. */
+    public class LoginException extends Exception {
+        /** Constructor that accepts a message */
+        public LoginException(String message) {
+            super(message);
+        }
+
+        /** Constructor that accepts a SQLException */
+        public LoginException(SQLException sqlException) {
+            this("SQL Exception: " + sqlException.getMessage());
+        }
     }
 }
