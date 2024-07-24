@@ -239,7 +239,7 @@ public class DatabaseUtil implements UserCacher {
             deleteUserStmt.setString(1, userID);
             int usersDeleted = deleteUserStmt.executeUpdate();
 
-            System.out.println("Transactions deleted: " + transactionsDeleted + "\nAccounts Deleted: " + accountsDeleted + "\nUsers deleted" + usersDeleted);
+            System.out.println("Transactions deleted: " + transactionsDeleted + "\nAccounts Deleted: " + accountsDeleted + "\nUsers deleted: " + usersDeleted);
             
             return transactionsDeleted > 0 || accountsDeleted > 0 || usersDeleted > 0;
         } catch (SQLException e) {

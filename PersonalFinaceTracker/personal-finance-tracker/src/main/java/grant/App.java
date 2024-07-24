@@ -89,12 +89,19 @@ public class App extends Application {
         // Add buttons
         Button dashboardBtn = UIHelpers.createNavButton("Dashboard");
         Button accountsBtn = UIHelpers.createNavButton("Accounts");
+        
+        // TODO Style these buttons better
+        Button logoutBtn = UIHelpers.createNavButton("Logout");
+        Button deleteUserButton = UIHelpers.createNavButton("Delete User");
 
         // Add button actions
         dashboardBtn.setOnAction(e -> showDashboard());
         accountsBtn.setOnAction(e -> showAccounts());
 
-        navBar.getChildren().addAll(dashboardBtn, accountsBtn);
+        logoutBtn.setOnAction(e -> logoutUser());
+        deleteUserButton.setOnAction(e -> deleteUser());
+
+        navBar.getChildren().addAll(dashboardBtn, accountsBtn, logoutBtn, deleteUserButton);
     }
 
     /** Displays the dashboard */
@@ -171,6 +178,19 @@ public class App extends Application {
         } else {
             // TODO: Possibly make custom exeption to display a detailed alert as to why user could not be logged in
         }
+    }
+
+    private void logoutUser() {
+        System.out.println("Logging out user!");
+        this.user = null;
+        primaryStage.close();
+        showLoginView();
+    }
+
+    private void deleteUser() {
+        System.out.println("Deleting user!");
+        dbUtil.deleteUser(user.getUserID());
+        logoutUser();
     }
 
     /** Creates a test user for UI testing purposes */
