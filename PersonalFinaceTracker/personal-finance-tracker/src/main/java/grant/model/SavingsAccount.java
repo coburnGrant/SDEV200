@@ -11,7 +11,7 @@ public class SavingsAccount extends Account {
         this.interestRate = interestRate;
     }
 
-    /** Constructor for a existing savings account */
+    /** Constructor for an existing savings account */
     public SavingsAccount(String accountID, String userID, String name, double interestRate, double initialBalance, AccountCacher cacher) {
         super(accountID, userID, name,  AccountType.SAVINGS, initialBalance, cacher);
     }
