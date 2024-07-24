@@ -22,8 +22,8 @@ public class AccountsListView extends BorderPane implements UserObserver {
     
     private CreateAccountView createAccountView;
 
-    // TODO: Account list row does not update balance when transaction is added!!
-    
+    // TODO: Account list row does not update balance when transaction is added!! (probably when the back button is pressed rather than the navbar button)
+
     public AccountsListView(User user) {
         this.user = user;
         user.addObserver(this);

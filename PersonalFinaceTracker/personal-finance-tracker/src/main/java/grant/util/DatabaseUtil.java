@@ -42,34 +42,41 @@ public class DatabaseUtil implements UserCacher {
     }
 
     // MARK: Querying
-    public User loadUser(String username, String password) throws SQLException {
+    public User loadUser(String username, String password) throws LoginException {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-        preparedStatement.setString(1, username);
-        preparedStatement.setString(2, password);
-
-        ResultSet result = preparedStatement.executeQuery();
-
-        if(result.next()) {
-            String userID = result.getString("userID");
-            String fname = result.getString("firstName");
-            String lname = result.getString("lastName");
-
-            User user = new User(userID, username, password, fname, lname, this);
-
-            // Get all of user's accounts
-            ArrayList<Account> accounts = accountsForUser(userID);
-
-            // Add user's accounts
-            for(Account account : accounts) {
-                user.addAccount(account, false);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+    
+            ResultSet result = preparedStatement.executeQuery();
+    
+            if(result.next()) {
+                String userID = result.getString("userID");
+                String fname = result.getString("firstName");
+                String lname = result.getString("lastName");
+    
+                User user = new User(userID, username, password, fname, lname, this);
+    
+                // Get all of user's accounts
+                ArrayList<Account> accounts = accountsForUser(userID);
+    
+                // Add user's accounts
+                for(Account account : accounts) {
+                    user.addAccount(account, false);
+                }
+    
+                return user;
+            } else {
+                throw new LoginException("User not found or incorrect password"); 
             }
+        } catch (SQLException e) {
+            System.out.println("Error with loading user with username and password:");
+            e.printStackTrace();
 
-            return user;
-        } else {
-            throw new SQLException("User not found or incorrect password"); 
+            throw new LoginException(e);
         }
     }
 
@@ -139,7 +146,7 @@ public class DatabaseUtil implements UserCacher {
     }
 
     // MARK: Adding
-    public boolean createUser(User user) {
+    public void createUser(User user) throws LoginException {
         String query = "INSERT INTO users (userID, username, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)";
 
         try {
@@ -152,13 +159,15 @@ public class DatabaseUtil implements UserCacher {
 
             int rowsInserted = preparedStatement.executeUpdate();
 
-            return rowsInserted > 0;
+            if (rowsInserted < 1) {
+                throw new LoginException("No user was added to the database");
+            }
         } catch (SQLException e) {
-            System.out.println("Error creating user:");
+            System.out.println("Error creating account:");
             e.printStackTrace();
+
+            throw new LoginException(e);
         }
-        
-        return false;
     }
 
     @Override
@@ -187,8 +196,25 @@ public class DatabaseUtil implements UserCacher {
             System.out.println("Error creating account:");
             e.printStackTrace();
         }
-
+        
         return false;
+    }
+
+    public class LoginException extends Exception {
+        // Default constructor
+        public LoginException() {
+            super();
+        }
+    
+        // Constructor that accepts a message
+        public LoginException(String message) {
+            super(message);
+        }
+
+        // Constructor that accepts a SQLException
+        public LoginException(SQLException sqlException) {
+            this("SQL Exception: " + sqlException.getMessage());
+        }
     }
 
     public boolean createTransaction(Transaction transaction) {

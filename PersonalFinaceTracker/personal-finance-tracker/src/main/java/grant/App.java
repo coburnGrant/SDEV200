@@ -9,6 +9,7 @@ import grant.model.Transaction;
 import grant.model.TransactionType;
 import grant.model.User;
 import grant.util.DatabaseUtil;
+import grant.util.DatabaseUtil.LoginException;
 import grant.view.AccountsListView;
 import grant.view.DashboardView;
 import grant.view.LoginView;
@@ -16,12 +17,15 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -90,9 +94,10 @@ public class App extends Application {
         Button dashboardBtn = UIHelpers.createNavButton("Dashboard");
         Button accountsBtn = UIHelpers.createNavButton("Accounts");
         
-        // TODO Style these buttons better
         Button logoutBtn = UIHelpers.createNavButton("Logout");
+        logoutBtn.setTextFill(Color.RED);
         Button deleteUserButton = UIHelpers.createNavButton("Delete User");
+        deleteUserButton.setTextFill(Color.RED);
 
         // Add button actions
         dashboardBtn.setOnAction(e -> showDashboard());
@@ -156,27 +161,27 @@ public class App extends Application {
             loginStage.close();
             showPrimaryStage();
 
-        } catch (SQLException e) {
-            System.out.println("Error loading user!!");
-            e.printStackTrace();
-            // TODO: Possibly make custom exeption to display a detailed alert as to why user could not be logged in
+        } catch (LoginException e) {
+            System.out.println("Error logging in user!! " + e.getMessage());
+            displayLoginAlert(e);
         }
     }
 
     private void createNewUser(User newUser) {
         System.out.println("creating new user/n" + newUser);
 
-        boolean userCreated = dbUtil.createUser(newUser);
+        try {
+            dbUtil.createUser(newUser);
 
-        if(userCreated) {
             // Update the cacher
             newUser.setCacher(dbUtil);
 
             this.user = newUser;
             loginStage.close();
             showPrimaryStage();
-        } else {
-            // TODO: Possibly make custom exeption to display a detailed alert as to why user could not be logged in
+        } catch (LoginException e) {
+            System.out.println("Error creating new user!! " + e.getMessage());
+            displayLoginAlert(e);
         }
     }
 
@@ -191,6 +196,14 @@ public class App extends Application {
         System.out.println("Deleting user!");
         dbUtil.deleteUser(user.getUserID());
         logoutUser();
+    }
+
+    private void displayLoginAlert(LoginException exception) {
+        Alert loginAlert = new Alert(AlertType.WARNING);
+        loginAlert.setTitle("Login Error!");
+        loginAlert.setHeaderText("Login Error!");
+        loginAlert.setContentText(exception.getMessage());
+        loginAlert.showAndWait();
     }
 
     /** Creates a test user for UI testing purposes */

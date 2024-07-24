@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+
 public class CreateTransactionView extends StackPane {
     private final Account account;
     private final EventHandler<ActionEvent> newTransactionHandler;
@@ -28,7 +29,7 @@ public class CreateTransactionView extends StackPane {
     private LabeledTextField amountTextField;
     private DatePicker datePicker;
 
-    public CreateTransactionView(Account account, EventHandler<ActionEvent> newTransactionHandler){
+    public CreateTransactionView(Account account, EventHandler<ActionEvent> newTransactionHandler) {
         this.account = account;
         this.newTransactionHandler = newTransactionHandler;
 
@@ -77,8 +78,22 @@ public class CreateTransactionView extends StackPane {
         transactionTypePicker.setValue(transaction.getType());
         descriptionField.setText(transaction.getDescription());
         amountTextField.setText(Double.toString(transaction.getAmount()));
-        LocalDate localDate = transaction.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        LocalDate localDate = convertDateToLocalDate(transaction.getDate());
         datePicker.setValue(localDate);
+    }
+
+    /** Convert Date to LocalDate */
+    public LocalDate convertDateToLocalDate(Date date) {
+        if(date instanceof java.sql.Date) {
+            return ((java.sql.Date) date).toLocalDate();
+        }
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    /** Convert LocalDate to Date */
+    public Date convertLocalDateToDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     public Transaction getTransaction() {
@@ -87,7 +102,7 @@ public class CreateTransactionView extends StackPane {
         double amount = amountTextField.getDoubleValue();
 
         LocalDate localDate = datePicker.getValue();
-        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        java.util.Date date = convertLocalDateToDate(localDate);
 
         return new Transaction(account.getAccountID(), description, amount, date, type);
     }
