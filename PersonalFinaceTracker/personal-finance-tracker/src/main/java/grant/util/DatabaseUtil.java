@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-
 import grant.model.Account;
 import grant.model.Account.AccountCacher;
 import grant.model.AccountType;
@@ -218,7 +217,89 @@ public class DatabaseUtil implements UserCacher {
 
     // MARK: Deleting
     @Override
-    public boolean deleteTransaction(Transaction transaction) {
+    public boolean deleteUser(String userID) {
+        try {
+            String deleteTransactionsSQL = "DELETE FROM transactions WHERE accountID IN (SELECT accountID FROM accounts WHERE userID = ?)";
+            String deleteAccountsSQL = "DELETE FROM accounts WHERE userID = ?";
+            String deleteUserSQL = "DELETE FROM users WHERE userID = ?";
+
+            PreparedStatement deleteTransactionsStmt = connection.prepareStatement(deleteTransactionsSQL);
+            PreparedStatement deleteAccountsStmt = connection.prepareStatement(deleteAccountsSQL);
+            PreparedStatement deleteUserStmt = connection.prepareStatement(deleteUserSQL);
+
+            // Delete transactions
+            deleteTransactionsStmt.setString(1, userID);
+            int transactionsDeleted = deleteTransactionsStmt.executeUpdate();
+
+            // Delete accounts
+            deleteAccountsStmt.setString(1, userID);
+            int accountsDeleted = deleteAccountsStmt.executeUpdate();
+
+            // Delete user
+            deleteUserStmt.setString(1, userID);
+            int usersDeleted = deleteUserStmt.executeUpdate();
+
+            System.out.println("Transactions deleted: " + transactionsDeleted + "\nAccounts Deleted: " + accountsDeleted + "\nUsers deleted" + usersDeleted);
+            
+            return transactionsDeleted > 0 || accountsDeleted > 0 || usersDeleted > 0;
+        } catch (SQLException e) {
+            System.out.println("Error deleting user");
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean deleteAccount(String accountID) {
+        try {
+
+            String deleteTransactionsSQL = "DELETE FROM transactions WHERE accountID = ?";
+            String deleteAccountSQL = "DELETE FROM accounts WHERE accountID = ?";
+
+            PreparedStatement deleteTransactionsStmt = connection.prepareStatement(deleteTransactionsSQL);
+            PreparedStatement deleteAccountStmt = connection.prepareStatement(deleteAccountSQL);
+
+            // Delete transactions
+            deleteTransactionsStmt.setString(1, accountID);
+            int transactionsDeleted = deleteTransactionsStmt.executeUpdate();
+
+            // Delete account
+            deleteAccountStmt.setString(1, accountID);
+            int accountsDeleted = deleteAccountStmt.executeUpdate();
+
+            System.out.println("Transactions deleted: " + transactionsDeleted + "\nAccounts Deleted: " + accountsDeleted);
+            
+            return transactionsDeleted > 0 || accountsDeleted > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error deleting account");
+            e.printStackTrace();
+        }
+
+        return false;    
+    }
+
+    @Override
+    public boolean deleteTransaction(String transactionID) {
+        try {
+
+            String deleteTransactionSQL = "DELETE FROM transactions WHERE transactionID = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteTransactionSQL);
+
+            preparedStatement.setString(1, transactionID);
+
+            int transactionsDeleted = preparedStatement.executeUpdate();
+
+            System.out.println("Transactions deleted: " + transactionsDeleted);
+
+            return transactionsDeleted > 0;
+        } catch (SQLException e) {
+            System.out.println("Error deleting transaction");
+            e.printStackTrace();
+        }
+
         return false;
     }
     

@@ -27,6 +27,7 @@ public abstract class Account {
     /** Type of account this is */
     private final AccountType accountType;
 
+    /** Cacher that handle's caching the account info to the database */
     private final AccountCacher cacher;
 
     /** Constructor for New Account */
@@ -143,7 +144,7 @@ public abstract class Account {
             
             if(cache) {
                 // Cache removal of transaction
-                boolean cached = cacher.deleteTransaction(transaction);
+                boolean cached = cacher.deleteTransaction(transaction.getTransactionID());
 
                 if(cached) {
                     System.out.println("Successfully cached removed transaction to database");
@@ -190,6 +191,6 @@ public abstract class Account {
 
     public interface AccountCacher {
         boolean createTransaction(Transaction transaction);
-        boolean deleteTransaction(Transaction transaction);
+        boolean deleteTransaction(String transactionID);
     }
 }

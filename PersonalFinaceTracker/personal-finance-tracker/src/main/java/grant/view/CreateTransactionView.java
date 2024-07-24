@@ -19,8 +19,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.util.converter.LocalDateStringConverter;
-
 public class CreateTransactionView extends StackPane {
     private final Account account;
     private final EventHandler<ActionEvent> newTransactionHandler;

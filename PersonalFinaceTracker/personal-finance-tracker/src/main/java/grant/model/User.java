@@ -9,8 +9,10 @@ public class User {
     /** User's id */
     private final String userID;
 
+    /** User's username */
     private final String username;
 
+    /** User's password */
     private final String password;
 
     /** User's first name */
@@ -25,6 +27,7 @@ public class User {
     /** List of observers for this user */
     private ArrayList<UserObserver> observers;
 
+    /** Cacher that handles caching the user info to the database */
     private UserCacher cacher;
 
     /** Constructor for a new user */
@@ -112,8 +115,12 @@ public class User {
      * @return a boolean indicating if the account was successfully removed
      */
     public boolean removeAccount(Account account) {
-        //TODO - cache removal
         boolean result = accounts.remove(account);
+
+        if(result) {
+            cacher.deleteAccount(account.getAccountID());
+        }
+
         notifyObservers();
         return result;
     }
@@ -214,15 +221,20 @@ public class User {
         return sb.toString();
     }
 
+    /** Getter for the cacher */
     public UserCacher getCacher() {
         return cacher;
     }
 
+    /** Setter for the cacher */
     public void setCacher(UserCacher cacher) {
         this.cacher = cacher;
     }
 
     public interface UserCacher extends Account.AccountCacher {
         boolean createAccount(Account account);
+        boolean deleteAccount(String accountID);
+
+        boolean deleteUser(String userID);
     }
 }
