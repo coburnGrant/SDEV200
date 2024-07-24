@@ -58,6 +58,7 @@ public class App extends Application {
         }
     }
 
+    /** Shows the primary stage when the user is logged in. */
     private void showPrimaryStage() {
         initTestUser();
         initRootLayout();
@@ -151,6 +152,7 @@ public class App extends Application {
         loginStage.show();
     }
 
+    /** Attempts to log the user in with username and password and displays alert if unsuccessful. */
     private void loginUser(String username, String password) {
         System.out.println("logging in user " + username + " with password: " + password);
 
@@ -167,6 +169,7 @@ public class App extends Application {
         }
     }
 
+    /** Attempts to create a new user, login the new user and displays an alert if unsuccessful. */
     private void createNewUser(User newUser) {
         System.out.println("creating new user/n" + newUser);
 
@@ -185,6 +188,7 @@ public class App extends Application {
         }
     }
 
+    /** Logs out the user and returns to the login page. */
     private void logoutUser() {
         System.out.println("Logging out user!");
         this.user = null;
@@ -192,12 +196,14 @@ public class App extends Application {
         showLoginView();
     }
 
+    /** Attempts to delete the user, along with the user's accounts and transactions. */
     private void deleteUser() {
         System.out.println("Deleting user!");
         dbUtil.deleteUser(user.getUserID());
         logoutUser();
     }
 
+    /** Displays an alert of a Login error. */
     private void displayLoginAlert(LoginException exception) {
         Alert loginAlert = new Alert(AlertType.WARNING);
         loginAlert.setTitle("Login Error!");

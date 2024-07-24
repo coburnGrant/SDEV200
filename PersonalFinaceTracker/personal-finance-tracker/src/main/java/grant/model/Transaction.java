@@ -83,6 +83,7 @@ public class Transaction {
         return formatDoubleToMoney(this.signedAmount());
     }
 
+    /** Gets a +/- description of the transaction amount. */
     public String getPlusMinusAmountDescription() {
         return (this.signedAmount() > 0 ? "+" : "") + getAmountDescription();
     }
@@ -91,14 +92,7 @@ public class Transaction {
     public String transactionDescription() {
         return description + "- " + getAmountDescription() + ". At " + date.toString();
     }
-
-    public void updateWith(Transaction transaction) {
-        this.type = transaction.getType();
-        this.description = transaction.getDescription();
-        this.amount = transaction.getAmount();
-        this.date = transaction.getDate();
-    }
-
+    
     /** Overridden toString method to represent the transaction object and its properties. */
     @Override
     public String toString() {

@@ -26,6 +26,7 @@ public class SavingsAccount extends Account {
         this.interestRate = interestRate;
     }
 
+    /** Gets the interest rate in a formatted % format. */
     public String getInterestRateDescription() {
         return interestRate + "%";
     }
