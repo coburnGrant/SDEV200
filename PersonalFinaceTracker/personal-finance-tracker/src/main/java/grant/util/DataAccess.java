@@ -62,11 +62,8 @@ public class DataAccess implements UserCacher {
 
                 User user = new User(userID, username, password, fname, lname, this);
 
-                // Get all of user's accounts
-                ArrayList<Account> accounts = accountsForUser(userID);
-
-                // Add user's accounts
-                for (Account account : accounts) {
+                // Get and add user's accounts
+                for (Account account : accountsForUser(userID)) {
                     user.addAccount(account, false);
                 }
 
@@ -98,12 +95,19 @@ public class DataAccess implements UserCacher {
 
         ArrayList<Account> accounts = new ArrayList<>();
 
+        String accountID;
+        String name;
+        double balance;
+        String accountType;
+        double interestRate;
+
         while (result.next()) {
-            String accountID = result.getString("accountID");
-            String name = result.getString("name");
-            double balance = result.getDouble("balance");
-            String accountType = result.getString("accountType");
-            double interestRate = result.getDouble("interestRate");
+
+            accountID = result.getString("accountID");
+            name = result.getString("name");
+            balance = result.getDouble("balance");
+            accountType = result.getString("accountType");
+            interestRate = result.getDouble("interestRate");
 
             Account account;
             if (accountType.equals(AccountType.SAVINGS.getDescription())) {
@@ -112,10 +116,8 @@ public class DataAccess implements UserCacher {
                 account = new CheckingAccount(accountID, userID, name, balance, this);
             }
 
-            // Load in transactions for account
-            ArrayList<Transaction> transactions = transactionsForAccount(accountID);
-
-            for (Transaction transaction : transactions) {
+            // Load in and transactions for account
+            for (Transaction transaction : transactionsForAccount(accountID)) {
                 account.addTransaction(transaction, false);
             }
 
@@ -136,12 +138,18 @@ public class DataAccess implements UserCacher {
 
         ArrayList<Transaction> transactions = new ArrayList<>();
 
+        String transactionID;
+        String description;
+        Double amount;
+        Date date;
+        String type;
+
         while (result.next()) {
-            String transactionID = result.getString("transactionID");
-            String description = result.getString("description");
-            Double amount = result.getDouble("amount");
-            Date date = result.getDate("Date");
-            String type = result.getString("type");
+            transactionID = result.getString("transactionID");
+            description = result.getString("description");
+            amount = result.getDouble("amount");
+            date = result.getDate("Date");
+            type = result.getString("type");
 
             TransactionType transactionType = type.equals(TransactionType.WITHDRAWAL.getDescription()) ? TransactionType.WITHDRAWAL : TransactionType.DEPOSIT;
 

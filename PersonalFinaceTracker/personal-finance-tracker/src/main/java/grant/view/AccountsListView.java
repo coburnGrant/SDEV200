@@ -21,9 +21,7 @@ public class AccountsListView extends BorderPane implements UserObserver {
     private final VBox accountDetails;
     
     private CreateAccountView createAccountView;
-
-    // TODO: Account list row does not update balance when transaction is added!! (probably when the back button is pressed rather than the navbar button)
-
+    
     public AccountsListView(User user) {
         this.user = user;
         user.addObserver(this);
@@ -82,6 +80,10 @@ public class AccountsListView extends BorderPane implements UserObserver {
     /** Closes account detail view */
     private void closeAccountDetails() {
         System.out.println("closing account details...");
+
+        // Refresh account list incase balance changed
+        addAccounts();
+
         setTop(title);
         setCenter(accountDetails);
     }

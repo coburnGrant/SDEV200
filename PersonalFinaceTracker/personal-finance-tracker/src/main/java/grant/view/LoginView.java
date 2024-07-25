@@ -175,7 +175,6 @@ public class LoginView extends BorderPane {
     }
 
     private User getNewUser() {
-        // TODO validate these fields perhaps
         String fname = firstNameField.getText();
         String lname = lastNameField.getText();
         String uname = createUsernameField.getText();
