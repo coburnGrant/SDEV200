@@ -1,15 +1,13 @@
 package grant;
 
-import java.sql.SQLException;
 import java.util.Date;
-
 import grant.model.CheckingAccount;
 import grant.model.SavingsAccount;
 import grant.model.Transaction;
 import grant.model.TransactionType;
 import grant.model.User;
-import grant.util.DatabaseUtil;
-import grant.util.DatabaseUtil.LoginException;
+import grant.util.DataAccess;
+import grant.exception.LoginException;
 import grant.view.AccountsListView;
 import grant.view.DashboardView;
 import grant.view.LoginView;
@@ -33,7 +31,7 @@ public class App extends Application {
     private static Scene primaryScene;
     private BorderPane rootLayout;
 
-    private DatabaseUtil dbUtil;
+    private DataAccess dataAccess;
 
     private User user;
     private User testUser;
@@ -44,7 +42,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        dbUtil = new DatabaseUtil();
+        dataAccess = new DataAccess();
 
         boolean isLoggedIn = false;
 
@@ -157,7 +155,7 @@ public class App extends Application {
         System.out.println("logging in user " + username + " with password: " + password);
 
         try {
-            User existingUser = dbUtil.loadUser(username, password);
+            User existingUser = dataAccess.loadUser(username, password);
 
             this.user = existingUser;
             loginStage.close();
@@ -174,10 +172,10 @@ public class App extends Application {
         System.out.println("creating new user/n" + newUser);
 
         try {
-            dbUtil.createUser(newUser);
+            dataAccess.createUser(newUser);
 
             // Update the cacher
-            newUser.setCacher(dbUtil);
+            newUser.setCacher(dataAccess);
 
             this.user = newUser;
             loginStage.close();
@@ -199,7 +197,7 @@ public class App extends Application {
     /** Attempts to delete the user, along with the user's accounts and transactions. */
     private void deleteUser() {
         System.out.println("Deleting user!");
-        dbUtil.deleteUser(user.getUserID());
+        dataAccess.deleteUser(user.getUserID());
         logoutUser();
     }
 

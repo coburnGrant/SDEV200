@@ -7,8 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import grant.exception.LoginException;
 import grant.model.Account;
-import grant.model.Account.AccountCacher;
 import grant.model.AccountType;
 import grant.model.CheckingAccount;
 import grant.model.SavingsAccount;
@@ -17,16 +18,10 @@ import grant.model.TransactionType;
 import grant.model.User;
 import grant.model.User.UserCacher;
 
-public class DatabaseUtil implements UserCacher {
-    static final String HOST = "localhost";
-    static final int PORT = 3306;
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
-    static final String DB_NAME = "personal_finance_tracker";
-
+public class DataAccess implements UserCacher {
     private Connection connection;
 
-    public DatabaseUtil() {
+    public DataAccess() {
         try {
             this.connection = getConnection();
         } catch (SQLException e) {
@@ -37,9 +32,9 @@ public class DatabaseUtil implements UserCacher {
 
     /** Establishes connection to the database. */
     private Connection getConnection() throws SQLException {
-        String url = getSqlUrl(HOST, PORT, DB_NAME);
+        String url = getSqlUrl(DBProperties.HOST, DBProperties.PORT, DBProperties.DB_NAME);
 
-        return DriverManager.getConnection(url, USER, PASSWORD);
+        return DriverManager.getConnection(url, DBProperties.USER, DBProperties.PASSWORD);
     }
 
     // MARK: Querying
@@ -344,18 +339,5 @@ public class DatabaseUtil implements UserCacher {
     /** Helper function to format a SQL URL string */
     public static String getSqlUrl(String host, int port, String dbName) {
         return String.format("jdbc:mysql://%s:%d/%s", host, port, dbName);
-    }
-
-    /** A class for exeptions to be thrown while logging in. */
-    public class LoginException extends Exception {
-        /** Constructor that accepts a message */
-        public LoginException(String message) {
-            super(message);
-        }
-
-        /** Constructor that accepts a SQLException */
-        public LoginException(SQLException sqlException) {
-            this("SQL Exception: " + sqlException.getMessage());
-        }
     }
 }
