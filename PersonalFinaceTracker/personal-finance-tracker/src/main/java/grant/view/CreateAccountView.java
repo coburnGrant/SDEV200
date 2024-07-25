@@ -89,12 +89,12 @@ public class CreateAccountView extends StackPane {
         switch(selectedAccountType) {
             case CHECKING:
 
-            return new CheckingAccount(userID, accountName, balance);
+            return new CheckingAccount(userID, accountName, balance, user.getCacher());
 
             case SAVINGS:
             double interestRate = Double.parseDouble(interestRateField.getText());
             
-            return new SavingsAccount(userID, accountName, interestRate, balance);
+            return new SavingsAccount(userID, accountName, interestRate, balance, user.getCacher());
         }
 
         return null;

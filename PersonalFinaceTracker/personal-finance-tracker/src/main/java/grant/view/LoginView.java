@@ -175,13 +175,13 @@ public class LoginView extends BorderPane {
     }
 
     private User getNewUser() {
-        // TODO validate these fields perhaps
         String fname = firstNameField.getText();
         String lname = lastNameField.getText();
         String uname = createUsernameField.getText();
         String pw = createPasswordField.getText();
 
-        return new User(uname, pw, fname, lname);
+        // Cacher will be null until the user is cached
+        return new User(uname, pw, fname, lname, null);
     }
     public interface LoginCallback {
         void onLogin(String username, String password);

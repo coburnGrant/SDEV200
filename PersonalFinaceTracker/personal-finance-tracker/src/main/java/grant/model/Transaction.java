@@ -23,15 +23,25 @@ public class Transaction {
     /** Type of transaction */
     private TransactionType type;
 
-    /** Constructor for Transaction */
+    /** Constructor for a new Transaction */
     public Transaction(String accountID, String description, double amount, Date date, TransactionType type) {
-        this.transactionID = UUID.randomUUID().toString();
+        this(UUID.randomUUID().toString(), accountID, description, amount, date, type);
+    }
+
+    /** Constructor for an existing Transaction */
+    public Transaction(String transactionID, String accountID, String description, double amount, Date date, TransactionType type) {
+        this.transactionID = transactionID;
         this.accountID = accountID;
 
         this.description = description;
         this.amount = amount;
         this.date = date;
         this.type = type;
+    }
+    
+    /** Getter for accountID */
+    public String getAccountID() {
+        return accountID;
     }
 
     /** Getter for transactionID */
@@ -73,6 +83,7 @@ public class Transaction {
         return formatDoubleToMoney(this.signedAmount());
     }
 
+    /** Gets a +/- description of the transaction amount. */
     public String getPlusMinusAmountDescription() {
         return (this.signedAmount() > 0 ? "+" : "") + getAmountDescription();
     }
@@ -81,14 +92,7 @@ public class Transaction {
     public String transactionDescription() {
         return description + "- " + getAmountDescription() + ". At " + date.toString();
     }
-
-    public void updateWith(Transaction transaction) {
-        this.type = transaction.getType();
-        this.description = transaction.getDescription();
-        this.amount = transaction.getAmount();
-        this.date = transaction.getDate();
-    }
-
+    
     /** Overridden toString method to represent the transaction object and its properties. */
     @Override
     public String toString() {

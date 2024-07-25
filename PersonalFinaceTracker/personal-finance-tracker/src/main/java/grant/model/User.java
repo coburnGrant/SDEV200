@@ -5,12 +5,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import grant.model.Account.AccountCacher;
+
 public class User {
     /** User's id */
     private final String userID;
 
+    /** User's username */
     private final String username;
 
+    /** User's password */
     private final String password;
 
     /** User's first name */
@@ -25,20 +29,39 @@ public class User {
     /** List of observers for this user */
     private ArrayList<UserObserver> observers;
 
-    /** Constructor for a user */
-    public User(String username, String password, String firstName, String lastName) {
-        this.userID = UUID.randomUUID().toString();
+    /** Cacher that handles caching the user info to the database */
+    private UserCacher cacher;
+
+    /** Constructor for a new user */
+    public User(String username, String password, String firstName, String lastName, UserCacher cacher) {
+        this(UUID.randomUUID().toString(), username, password, firstName, lastName, cacher);
+    }
+
+    /** Constructor for an existing user */
+    public User(String userID, String username, String password, String firstName, String lastName, UserCacher cacher) {
+        this.userID = userID;
         this.username = username;
-        this.password = password;        
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.accounts = new ArrayList<>();
         this.observers = new ArrayList<>();
+        this.cacher = cacher;
     }
 
     /** Getter for userID */
     public String getUserID() {
         return userID;
+    }
+
+    /** Getter for username */
+    public String getUsername() {
+        return username;
+    }
+
+    /** Getter for password */
+    public String getPassword() {
+        return password;
     }
 
     /** Getter for user firstName */
@@ -67,23 +90,46 @@ public class User {
     }
 
     /**
-     * Adds an account to the user's list of accounts
+     * Adds an account to the user's list of accounts.
+     * If the account is successfully added and caching is enabled, it caches the
+     * new account in the database.
      * 
-     * @return a boolean indicating if the account was successfully added
+     * @param account the account to be added to the list
+     * @param cache   indicates if this new account should be cached in the database
+     * @return a boolean indicating if the account was successfully added to the
+     *         list
      */
-    public boolean addAccount(Account account) {
+    public boolean addAccount(Account account, boolean cache) {
         boolean result = accounts.add(account);
+
+        if (result && cache) {
+            boolean cached = cacher.createAccount(account);
+
+            if (cached) {
+                System.out.println("Successfully cached new account to database");
+            } else {
+                System.out.println("Failed to cache new account to database");
+            }
+        }
+
         notifyObservers();
         return result;
     }
 
     /**
-     * Removes an account from the user's list of accounts
+     * Removes an account from the user's list of account
+     * If the account is successfully removed, it caches the removal of the account
+     * in the database.
      * 
      * @return a boolean indicating if the account was successfully removed
      */
     public boolean removeAccount(Account account) {
         boolean result = accounts.remove(account);
+
+        if (result) {
+            cacher.deleteAccount(account.getAccountID());
+        }
+
         notifyObservers();
         return result;
     }
@@ -182,5 +228,47 @@ public class User {
 
         sb.append("}");
         return sb.toString();
+    }
+
+    /** Getter for the cacher */
+    public UserCacher getCacher() {
+        return cacher;
+    }
+
+    /** Setter for the cacher */
+    public void setCacher(UserCacher cacher) {
+        this.cacher = cacher;
+    }
+
+    /**
+     * The UserCacher interface extends the AccountCacher interface and provides
+     * additional methods
+     * for caching user accounts and user information, such as in a database.
+     */
+    public interface UserCacher extends AccountCacher {
+
+        /**
+         * Caches a new account.
+         * 
+         * @param account the account to be cached
+         * @return a boolean indicating if the account was cached
+         */
+        boolean createAccount(Account account);
+
+        /**
+         * Deletes a cached account.
+         * 
+         * @param accountID the ID of the account to be deleted
+         * @return a boolean indicating if the account was deleted
+         */
+        boolean deleteAccount(String accountID);
+
+        /**
+         * Deletes a cached user and their associated data.
+         * 
+         * @param userID the ID of the user to be deleted
+         * @return a boolean indicating if the user was deleted
+         */
+        boolean deleteUser(String userID);
     }
 }

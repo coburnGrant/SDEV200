@@ -21,7 +21,7 @@ public class AccountsListView extends BorderPane implements UserObserver {
     private final VBox accountDetails;
     
     private CreateAccountView createAccountView;
-
+    
     public AccountsListView(User user) {
         this.user = user;
         user.addObserver(this);
@@ -80,6 +80,10 @@ public class AccountsListView extends BorderPane implements UserObserver {
     /** Closes account detail view */
     private void closeAccountDetails() {
         System.out.println("closing account details...");
+
+        // Refresh account list incase balance changed
+        addAccounts();
+
         setTop(title);
         setCenter(accountDetails);
     }
@@ -109,7 +113,7 @@ public class AccountsListView extends BorderPane implements UserObserver {
 
         System.out.println("Creating new account: \n" + newAccount);
 
-        user.addAccount(newAccount);
+        user.addAccount(newAccount, true);
     }
 
     @Override
